@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TheyLied.edu — The Rutherford–Bohr Cover-Up</title>
+  <title>TheyLied.cc — The Rutherford–Bohr Cover-Up</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+Pro:wght@300;400;600;700&family=Special+Elite&display=swap');
 
@@ -544,7 +544,7 @@
   <!-- ============ LANDING OVERLAY ============ -->
   <div id="landing-overlay">
     <div class="landing-stamp">Classification Level: Grade 10</div>
-    <h1><span class="red">They Lied</span>.edu</h1>
+    <h1><span class="red">They Lied</span>.cc</h1>
     <p class="landing-warning">
       You are about to access information that has been systematically withheld
       from the public for over one hundred years. What you learn here cannot be unlearned.
@@ -570,7 +570,7 @@
   <!-- ============ HERO ============ -->
   <section class="hero">
     <div class="classified-stamp">Classified — Grade 10 Curriculum</div>
-    <h1><span class="they">They Lied</span>.edu</h1>
+    <h1><span class="they">They Lied</span>.cc</h1>
     <p class="subtitle">
       Your high school chemistry teacher knew the Rutherford–Bohr model was wrong.
       <strong>They taught it anyway.</strong>
@@ -615,10 +615,13 @@
               <circle cx="70" cy="70" r="63" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1"/>
               <circle cx="70" cy="70" r="8" fill="#cc2222"/>
               <text x="70" y="74" text-anchor="middle" fill="white" font-size="8" font-weight="bold">+</text>
-              <circle r="4" fill="#4a9eff"><animateMotion dur="1.5s" repeatCount="indefinite" path="M95,70 A25,25 0 1,1 94.99,70"/></circle>
-              <circle r="4" fill="#4a9eff"><animateMotion dur="2.2s" repeatCount="indefinite" path="M115,70 A45,45 0 1,1 114.99,70"/></circle>
-              <circle r="4" fill="#4a9eff"><animateMotion dur="2.2s" repeatCount="indefinite" path="M25,70 A45,45 0 1,0 25.01,70"/></circle>
-              <circle r="4" fill="#4a9eff"><animateMotion dur="3s" repeatCount="indefinite" path="M133,70 A63,63 0 1,1 132.99,70"/></circle>
+              <path id="sp1" d="M95,70 A25,25 0 1,1 45,70 A25,25 0 1,1 95,70" fill="none" stroke="none"/>
+              <path id="sp2" d="M115,70 A45,45 0 1,1 25,70 A45,45 0 1,1 115,70" fill="none" stroke="none"/>
+              <path id="sp3" d="M133,70 A63,63 0 1,1 7,70 A63,63 0 1,1 133,70" fill="none" stroke="none"/>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="1.5s" repeatCount="indefinite"><mpath href="#sp1"/></animateMotion></circle>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#sp2"/></animateMotion></circle>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="2.2s" repeatCount="indefinite" begin="-1.1s"><mpath href="#sp2"/></animateMotion></circle>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#sp3"/></animateMotion></circle>
             </svg>
           </div>
           <p class="pill-desc">
@@ -703,39 +706,27 @@
             <circle cx="140" cy="140" r="16" fill="url(#nucleus-grad)"/>
             <text x="140" y="144" text-anchor="middle" fill="white" font-size="9" font-weight="bold">+</text>
             <!-- Electrons animated along circular paths -->
+            <!-- Orbital paths centered on nucleus (140,140) -->
+            <path id="bpath1" d="M190,140 A50,50 0 1,1 90,140 A50,50 0 1,1 190,140" fill="none" stroke="none"/>
+            <path id="bpath2" d="M225,140 A85,85 0 1,1 55,140 A85,85 0 1,1 225,140" fill="none" stroke="none"/>
+            <path id="bpath3" d="M260,140 A120,120 0 1,1 20,140 A120,120 0 1,1 260,140" fill="none" stroke="none"/>
             <g id="bohr-electrons">
               <circle r="6" fill="#4a9eff">
-                <animateMotion dur="2s" repeatCount="indefinite">
-                  <mpath href="#orbit-path-1"/>
-                </animateMotion>
+                <animateMotion dur="2s" repeatCount="indefinite"><mpath href="#bpath1"/></animateMotion>
               </circle>
               <circle r="6" fill="#4a9eff">
-                <animateMotion dur="2s" repeatCount="indefinite" begin="-1s">
-                  <mpath href="#orbit-path-1"/>
-                </animateMotion>
+                <animateMotion dur="2s" repeatCount="indefinite" begin="-1s"><mpath href="#bpath1"/></animateMotion>
               </circle>
               <circle r="6" fill="#4a9eff">
-                <animateMotion dur="3.2s" repeatCount="indefinite">
-                  <mpath href="#orbit-path-2"/>
-                </animateMotion>
+                <animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#bpath2"/></animateMotion>
               </circle>
               <circle r="6" fill="#4a9eff">
-                <animateMotion dur="3.2s" repeatCount="indefinite" begin="-1.6s">
-                  <mpath href="#orbit-path-2"/>
-                </animateMotion>
+                <animateMotion dur="3.2s" repeatCount="indefinite" begin="-1.6s"><mpath href="#bpath2"/></animateMotion>
               </circle>
               <circle r="6" fill="#4a9eff">
-                <animateMotion dur="4.5s" repeatCount="indefinite">
-                  <mpath href="#orbit-path-3"/>
-                </animateMotion>
+                <animateMotion dur="4.5s" repeatCount="indefinite"><mpath href="#bpath3"/></animateMotion>
               </circle>
             </g>
-            <!-- Hidden path definitions for animateMotion -->
-            <defs>
-              <circle id="orbit-path-1" cx="140" cy="140" r="50" fill="none"/>
-              <circle id="orbit-path-2" cx="140" cy="140" r="85" fill="none"/>
-              <circle id="orbit-path-3" cx="140" cy="140" r="120" fill="none"/>
-            </defs>
           </svg>
         </div>
         <div class="bohr-click-hint" id="bohr-hint">👆 Click to shatter the lie</div>
@@ -1201,7 +1192,7 @@
 
   <!-- ============ FOOTER ============ -->
   <footer>
-    <p>© 2026 TheyLied.edu — A grassroots movement powered by concerned citizens who paid attention in university.</p>
+    <p>© 2026 TheyLied.cc — A grassroots movement powered by concerned citizens who paid attention in university.</p>
     <p style="margin-top: 12px;">
       <a href="https://en.wikipedia.org/wiki/Atomic_orbital">The Truth</a> ·
       <a href="#">About Us (Redacted)</a> ·
