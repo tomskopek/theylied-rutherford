@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TheyLied.edu — The Rutherford Cover-Up</title>
+  <title>TheyLied.edu — The Rutherford–Bohr Cover-Up</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+Pro:wght@400;600;700&family=Special+Elite&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+Pro:wght@300;400;600;700&family=Special+Elite&display=swap');
 
     :root {
       --blood-red: #8b0000;
-      --dark-bg: #0a0a0a;
+      --dark-bg: #0d0d0d;
       --off-white: #e8e0d4;
+      --text-body: #ccc5b9;
       --parchment: #f5f0e8;
       --stamp-red: #cc2222;
       --redacted-black: #111;
@@ -20,29 +21,62 @@
 
     body {
       background: var(--dark-bg);
-      color: var(--off-white);
+      color: var(--text-body);
       font-family: 'Source Sans Pro', sans-serif;
-      line-height: 1.7;
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.8;
       overflow-x: hidden;
+    }
+
+    strong, b { font-weight: 600; color: var(--off-white); }
+    em { color: var(--off-white); }
+
+    /* ============ LANDING OVERLAY ============ */
+    #landing-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--dark-bg);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 40px;
+      transition: opacity 0.8s, visibility 0.8s;
+    }
+    #landing-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    #landing-overlay .landing-stamp {
+      font-family: 'Special Elite', monospace; color: var(--stamp-red);
+      font-size: 0.9rem; letter-spacing: 6px; text-transform: uppercase;
+      border: 2px solid var(--stamp-red); padding: 6px 20px;
+      transform: rotate(-2deg); margin-bottom: 40px; opacity: 0.8;
+    }
+    #landing-overlay h1 {
+      font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900; color: var(--off-white); line-height: 1.1; margin-bottom: 24px;
+    }
+    #landing-overlay h1 .red { color: var(--stamp-red); }
+    #landing-overlay .landing-warning {
+      max-width: 500px; font-size: 1.1rem; opacity: 0.7; margin-bottom: 16px;
+    }
+    #landing-overlay .landing-sound {
+      font-family: 'Special Elite', monospace; color: var(--stamp-red);
+      font-size: 0.9rem; margin-bottom: 40px; letter-spacing: 2px;
+    }
+    #landing-overlay .enter-btn {
+      padding: 16px 48px; background: var(--stamp-red); color: white; border: none;
+      border-radius: 4px; font-family: 'Special Elite', monospace; font-size: 1.2rem;
+      letter-spacing: 3px; cursor: pointer; transition: all 0.3s;
+      text-transform: uppercase;
+    }
+    #landing-overlay .enter-btn:hover { background: #ee3333; transform: scale(1.05); }
+    #landing-overlay .landing-fine-print {
+      margin-top: 24px; font-size: 0.75rem; opacity: 0.3; max-width: 400px;
     }
 
     /* ============ NEWS TICKER ============ */
     .news-ticker {
-      background: var(--blood-red);
-      color: white;
-      padding: 8px 0;
-      font-family: 'Special Elite', monospace;
-      font-size: 0.85rem;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
-      z-index: 100;
-      cursor: pointer;
+      background: var(--blood-red); color: white; padding: 10px 0;
+      font-family: 'Special Elite', monospace; font-size: 0.85rem;
+      overflow: hidden; white-space: nowrap; position: relative; z-index: 100;
     }
-    .ticker-inner {
-      display: inline-block;
-      animation: ticker-scroll 60s linear infinite;
-    }
+    .ticker-inner { display: inline-block; animation: ticker-scroll 60s linear infinite; }
     .ticker-inner:hover { animation-play-state: paused; }
     .ticker-item { padding: 0 40px; display: inline; }
     .ticker-item::before { content: '⚠ '; }
@@ -53,86 +87,44 @@
 
     /* ============ AUDIO CONTROL ============ */
     #audio-control {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: rgba(139, 0, 0, 0.9);
-      border: 1px solid #cc2222;
-      color: var(--off-white);
-      padding: 10px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Special Elite', monospace;
-      font-size: 14px;
-      transition: all 0.3s;
+      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+      background: rgba(139, 0, 0, 0.9); border: 1px solid #cc2222;
+      color: var(--off-white); padding: 10px 16px; border-radius: 4px;
+      cursor: pointer; font-family: 'Special Elite', monospace; font-size: 14px;
+      transition: all 0.3s; display: none;
     }
     #audio-control:hover { background: rgba(204, 34, 34, 0.9); }
 
     /* ============ HERO ============ */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 40px 20px;
-      position: relative;
-      background: radial-gradient(ellipse at center, rgba(139,0,0,0.15) 0%, transparent 70%), var(--dark-bg);
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 40px 20px; position: relative;
+      background: radial-gradient(ellipse at center, rgba(139,0,0,0.12) 0%, transparent 70%), var(--dark-bg);
     }
     .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.5;
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
     .classified-stamp {
-      font-family: 'Special Elite', monospace;
-      color: var(--stamp-red);
-      font-size: 1.1rem;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      border: 3px solid var(--stamp-red);
-      padding: 8px 24px;
-      transform: rotate(-3deg);
-      margin-bottom: 40px;
-      position: relative;
-      opacity: 0.9;
+      font-family: 'Special Elite', monospace; color: var(--stamp-red);
+      font-size: 1rem; letter-spacing: 6px; text-transform: uppercase;
+      border: 2px solid var(--stamp-red); padding: 8px 24px;
+      transform: rotate(-3deg); margin-bottom: 40px; opacity: 0.8;
     }
     .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      position: relative;
+      font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 20px; position: relative;
+      color: var(--off-white);
     }
     .hero h1 .they { color: var(--stamp-red); }
     .hero .subtitle {
-      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-      max-width: 700px;
-      opacity: 0.85;
-      margin-bottom: 40px;
-      font-weight: 400;
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem); max-width: 700px;
+      opacity: 0.8; margin-bottom: 40px; font-weight: 300; color: var(--text-body);
     }
-    .lie-counter {
-      font-family: 'Special Elite', monospace;
-      background: rgba(139, 0, 0, 0.2);
-      border: 1px solid rgba(139, 0, 0, 0.4);
-      padding: 16px 32px;
-      border-radius: 4px;
-      margin-bottom: 40px;
-    }
-    .lie-counter .number { font-size: 2.5rem; color: var(--stamp-red); font-weight: 700; }
-    .lie-counter .label { font-size: 0.9rem; opacity: 0.7; display: block; }
     .scroll-prompt {
-      position: absolute;
-      bottom: 30px;
-      animation: bounce 2s infinite;
-      opacity: 0.5;
-      font-size: 1.5rem;
+      position: absolute; bottom: 30px; animation: bounce 2s infinite;
+      opacity: 0.4; font-size: 1.5rem;
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
@@ -142,123 +134,100 @@
     /* ============ QUOTE BANNER ============ */
     .quote-banner {
       background: linear-gradient(135deg, #1a0000, #0a0a0a);
-      padding: 60px 20px;
-      text-align: center;
-      border-top: 1px solid rgba(139,0,0,0.3);
-      border-bottom: 1px solid rgba(139,0,0,0.3);
+      padding: 60px 20px; text-align: center;
+      border-top: 1px solid rgba(139,0,0,0.2); border-bottom: 1px solid rgba(139,0,0,0.2);
     }
     .quote-banner blockquote {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.3rem, 3vw, 2rem);
-      font-style: italic;
-      max-width: 800px;
-      margin: 0 auto;
-      line-height: 1.6;
+      font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-style: italic; max-width: 750px; margin: 0 auto; line-height: 1.6;
+      color: var(--off-white);
     }
     .quote-banner .attribution {
-      margin-top: 16px;
-      font-family: 'Special Elite', monospace;
-      color: var(--stamp-red);
-      font-size: 0.95rem;
+      margin-top: 16px; font-family: 'Special Elite', monospace;
+      color: var(--stamp-red); font-size: 0.9rem;
     }
 
     /* ============ SECTIONS ============ */
     .section {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 80px 24px;
+      max-width: 800px; margin: 0 auto; padding: 80px 24px;
     }
     .section-header {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 900;
-      margin-bottom: 12px;
+      font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900; margin-bottom: 16px; color: var(--off-white);
     }
     .section-header .red { color: var(--stamp-red); }
     .section-subheader {
-      font-family: 'Special Elite', monospace;
-      color: var(--stamp-red);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-      margin-bottom: 8px;
+      font-family: 'Special Elite', monospace; color: var(--stamp-red);
+      letter-spacing: 3px; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 8px;
     }
-    .section p { font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9; }
+    .section p { font-size: 1.05rem; margin-bottom: 20px; line-height: 1.85; }
 
     /* ============ RED PILL CARDS ============ */
     .red-pill {
-      display: flex; gap: 40px; margin: 40px 0; flex-wrap: wrap; justify-content: center;
+      display: flex; gap: 30px; margin: 40px 0; flex-wrap: wrap; justify-content: center;
     }
     .pill-card {
-      flex: 1; min-width: 280px; max-width: 400px; border-radius: 8px; overflow: hidden;
+      flex: 1; min-width: 280px; max-width: 380px; border-radius: 10px; overflow: hidden;
     }
     .pill-card .pill-label {
       font-family: 'Special Elite', monospace; text-align: center; padding: 12px;
-      font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+      font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase;
     }
     .pill-card.lie { border: 2px solid var(--stamp-red); }
     .pill-card.lie .pill-label { background: var(--stamp-red); color: white; }
     .pill-card.truth { border: 2px solid #2a7a2a; }
     .pill-card.truth .pill-label { background: #2a7a2a; color: white; }
     .pill-card .pill-content {
-      padding: 24px; text-align: center; background: rgba(255,255,255,0.03);
+      padding: 24px; text-align: center; background: rgba(255,255,255,0.02);
     }
-    .pill-card .atom-visual { font-size: 80px; margin-bottom: 16px; }
+    .pill-card .pill-svg { margin-bottom: 16px; display: flex; justify-content: center; }
     .pill-card .pill-desc { font-size: 0.95rem; opacity: 0.8; }
 
     /* ============ DIAGRAM SECTION ============ */
     .diagram-container {
-      display: flex; gap: 40px; margin: 40px 0; flex-wrap: wrap; justify-content: center;
+      display: flex; gap: 30px; margin: 40px 0; flex-wrap: wrap; justify-content: center;
     }
     .diagram-box {
       flex: 1; min-width: 300px; max-width: 420px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 12px; overflow: hidden;
     }
     .diagram-box .diagram-title {
       font-family: 'Special Elite', monospace; text-align: center; padding: 14px;
-      font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .diagram-box .diagram-svg { padding: 20px; display: flex; justify-content: center; }
-    .diagram-box .diagram-desc { padding: 16px 20px; font-size: 0.92rem; opacity: 0.85; }
+    .diagram-box .diagram-desc { padding: 16px 20px; font-size: 0.9rem; }
     .diagram-box .diagram-desc h4 {
-      font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 8px; color: var(--off-white);
+      font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: 8px;
+      color: var(--off-white); font-weight: 700;
     }
-    .diagram-box .diagram-desc ul {
-      margin: 8px 0 8px 20px; font-size: 0.88rem;
-    }
-    .diagram-box .diagram-desc li { margin-bottom: 4px; }
-    .bohr-title { background: rgba(139,0,0,0.15); color: var(--stamp-red); }
-    .quantum-title { background: rgba(42,122,42,0.15); color: #5cb85c; }
-
-    /* Interactive Bohr click */
+    .diagram-box .diagram-desc ul { margin: 8px 0 12px 20px; font-size: 0.88rem; }
+    .diagram-box .diagram-desc li { margin-bottom: 6px; }
+    .bohr-title { background: rgba(139,0,0,0.12); color: var(--stamp-red); }
+    .quantum-title { background: rgba(42,122,42,0.12); color: #5cb85c; }
     #bohr-svg { cursor: pointer; }
     #bohr-svg:hover .orbit-ring { stroke-dasharray: 4 4; }
     .bohr-click-hint {
       font-family: 'Special Elite', monospace; text-align: center; padding: 8px;
       font-size: 0.75rem; color: var(--stamp-red); opacity: 0.7;
     }
-
-    /* Orbital tabs */
-    .orbital-tabs {
-      display: flex; gap: 8px; padding: 0 20px; margin-bottom: 8px;
-    }
+    .orbital-tabs { display: flex; gap: 8px; padding: 0 20px; margin-bottom: 8px; }
     .orbital-tab {
-      flex: 1; padding: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.15);
+      flex: 1; padding: 8px; text-align: center; border: 1px solid rgba(255,255,255,0.12);
       border-radius: 6px; cursor: pointer; font-family: 'Special Elite', monospace;
-      font-size: 0.85rem; transition: all 0.3s; background: transparent; color: var(--off-white);
+      font-size: 0.85rem; transition: all 0.3s; background: transparent; color: var(--text-body);
     }
     .orbital-tab:hover, .orbital-tab.active {
-      background: rgba(42,122,42,0.2); border-color: #5cb85c; color: #5cb85c;
+      background: rgba(42,122,42,0.15); border-color: #5cb85c; color: #5cb85c;
     }
 
     /* ============ TIMELINE ============ */
     .timeline { position: relative; margin: 40px 0; padding-left: 40px; }
     .timeline::before {
       content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
-      width: 2px; background: var(--stamp-red); opacity: 0.4;
+      width: 2px; background: var(--stamp-red); opacity: 0.3;
     }
     .timeline-entry { position: relative; margin-bottom: 36px; padding-left: 20px; }
     .timeline-entry::before {
@@ -266,21 +235,24 @@
       width: 12px; height: 12px; border-radius: 50%;
       background: var(--stamp-red); border: 2px solid var(--dark-bg);
     }
-    .timeline-year { font-family: 'Special Elite', monospace; color: var(--stamp-red); font-size: 1.1rem; margin-bottom: 4px; }
-    .timeline-event { font-size: 1rem; opacity: 0.85; }
-    .timeline-event .suppressed { color: var(--stamp-red); font-weight: 700; }
+    .timeline-year {
+      font-family: 'Special Elite', monospace; color: var(--stamp-red);
+      font-size: 1.05rem; margin-bottom: 4px;
+    }
+    .timeline-event { font-size: 0.98rem; }
+    .timeline-event .suppressed { color: var(--stamp-red); font-weight: 600; }
 
     /* ============ TESTIMONIALS ============ */
-    .testimonials { display: flex; flex-direction: column; gap: 30px; margin: 40px 0; }
+    .testimonials { display: flex; flex-direction: column; gap: 24px; margin: 40px 0; }
     .testimonial {
-      background: rgba(255,255,255,0.03); border-left: 4px solid var(--stamp-red);
+      background: rgba(255,255,255,0.02); border-left: 3px solid var(--stamp-red);
       padding: 24px; border-radius: 0 8px 8px 0;
     }
     .testimonial .redacted-name {
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
-      margin-bottom: 8px; font-size: 0.9rem;
+      margin-bottom: 8px; font-size: 0.85rem;
     }
-    .testimonial .quote-text { font-style: italic; font-size: 1.05rem; opacity: 0.9; }
+    .testimonial .quote-text { font-style: italic; font-size: 1rem; }
     .redacted {
       background: var(--redacted-black); color: var(--redacted-black);
       padding: 0 4px; border-radius: 2px; cursor: pointer;
@@ -290,99 +262,94 @@
 
     /* ============ MONEY STATS ============ */
     .money-stats {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px; margin: 40px 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin: 40px 0;
     }
     .money-stat {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(139,0,0,0.2);
-      padding: 24px; text-align: center; border-radius: 8px;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.15);
+      padding: 20px; text-align: center; border-radius: 8px;
     }
     .money-stat .stat-number {
-      font-family: 'Playfair Display', serif; font-size: 2.2rem;
+      font-family: 'Playfair Display', serif; font-size: 2rem;
       color: var(--stamp-red); font-weight: 900;
     }
-    .money-stat .stat-label { font-size: 0.85rem; opacity: 0.7; margin-top: 4px; }
+    .money-stat .stat-label { font-size: 0.8rem; opacity: 0.6; margin-top: 4px; }
 
     /* ============ RESEARCH LINKS ============ */
-    .research-links { margin: 40px 0; display: flex; flex-direction: column; gap: 12px; }
+    .research-links { margin: 40px 0; display: flex; flex-direction: column; gap: 10px; }
     .research-link {
-      display: block; background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(139,0,0,0.2); padding: 16px 20px;
-      border-radius: 4px; text-decoration: none; color: var(--off-white);
+      display: block; background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(139,0,0,0.15); padding: 16px 20px;
+      border-radius: 6px; text-decoration: none; color: var(--text-body);
       transition: all 0.3s; font-size: 0.95rem;
     }
-    .research-link:hover { background: rgba(139,0,0,0.15); border-color: var(--stamp-red); }
+    .research-link:hover { background: rgba(139,0,0,0.1); border-color: var(--stamp-red); }
     .research-link .link-tag {
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
-      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
       display: block; margin-bottom: 4px;
     }
 
     /* ============ FAQ ============ */
     .faq-item {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(139,0,0,0.15);
-      border-radius: 8px; margin-bottom: 16px; overflow: hidden;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.1);
+      border-radius: 8px; margin-bottom: 12px; overflow: hidden;
     }
     .faq-question {
-      padding: 20px; cursor: pointer; font-weight: 700; font-size: 1.05rem;
+      padding: 18px 20px; cursor: pointer; font-weight: 600; font-size: 1rem;
       display: flex; justify-content: space-between; align-items: center;
-      transition: background 0.3s; user-select: none;
+      transition: background 0.3s; user-select: none; color: var(--off-white);
     }
-    .faq-question:hover { background: rgba(139,0,0,0.1); }
+    .faq-question:hover { background: rgba(139,0,0,0.08); }
     .faq-question .arrow { transition: transform 0.3s; font-size: 0.8rem; }
     .faq-item.open .faq-question .arrow { transform: rotate(180deg); }
-    .faq-answer {
-      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
-      padding: 0 20px;
-    }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding: 0 20px; }
     .faq-item.open .faq-answer { max-height: 500px; padding: 0 20px 20px; }
-    .faq-answer p { font-size: 1rem; opacity: 0.85; }
+    .faq-answer p { font-size: 0.98rem; }
     .faq-answer .hostility {
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
-      font-size: 0.85rem; margin-top: 8px;
+      font-size: 0.8rem; margin-top: 10px;
     }
 
     /* ============ SHILL GUIDE ============ */
     .shill-cards {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px; margin: 40px 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px; margin: 40px 0;
     }
     .shill-card {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(139,0,0,0.2);
-      border-radius: 8px; padding: 24px;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.12);
+      border-radius: 8px; padding: 20px;
     }
-    .shill-card .shill-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .shill-card h4 {
-      font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 8px;
-    }
-    .shill-card p { font-size: 0.9rem; opacity: 0.8; }
+    .shill-card .shill-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .shill-card h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: 8px; color: var(--off-white); }
+    .shill-card p { font-size: 0.88rem; }
     .shill-card .threat-level {
-      font-family: 'Special Elite', monospace; font-size: 0.75rem;
+      font-family: 'Special Elite', monospace; font-size: 0.7rem;
       letter-spacing: 2px; margin-top: 12px; padding: 4px 10px;
       border-radius: 4px; display: inline-block;
     }
-    .threat-low { background: rgba(42,122,42,0.2); color: #5cb85c; }
-    .threat-med { background: rgba(200,150,0,0.2); color: #d4a017; }
-    .threat-high { background: rgba(204,34,34,0.2); color: var(--stamp-red); }
+    .threat-low { background: rgba(42,122,42,0.15); color: #5cb85c; }
+    .threat-med { background: rgba(200,150,0,0.15); color: #d4a017; }
+    .threat-high { background: rgba(204,34,34,0.15); color: var(--stamp-red); }
 
     /* ============ MEETING MINUTES ============ */
     .minutes-doc {
-      background: #f5f0e8; color: #222; border-radius: 4px; padding: 32px;
-      margin: 40px 0; font-family: 'Source Sans Pro', serif; position: relative;
+      background: #f5f0e8; color: #333; border-radius: 4px; padding: 32px;
+      margin: 40px 0; position: relative;
       box-shadow: 4px 4px 20px rgba(0,0,0,0.5);
     }
     .minutes-doc::before {
       content: 'CONFIDENTIAL'; position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%) rotate(-30deg);
       font-family: 'Special Elite', monospace; font-size: 5rem;
-      color: rgba(204,34,34,0.08); letter-spacing: 10px; pointer-events: none;
+      color: rgba(204,34,34,0.07); letter-spacing: 10px; pointer-events: none;
     }
-    .minutes-doc h4 { font-size: 1.1rem; margin-bottom: 4px; color: #333; }
+    .minutes-doc h4 { font-size: 1.05rem; margin-bottom: 4px; color: #222; }
     .minutes-doc .minutes-meta {
-      font-size: 0.85rem; color: #666; margin-bottom: 20px;
+      font-size: 0.82rem; color: #666; margin-bottom: 20px;
       padding-bottom: 12px; border-bottom: 1px solid #ddd;
     }
-    .minutes-doc .minutes-line { margin-bottom: 12px; font-size: 0.95rem; color: #333; }
+    .minutes-doc .minutes-line { margin-bottom: 12px; font-size: 0.92rem; color: #333; line-height: 1.7; }
     .minutes-doc .minutes-speaker { font-weight: 700; }
     .minutes-doc .minutes-redacted {
       background: #222; color: #222; padding: 0 30px; border-radius: 2px;
@@ -393,74 +360,70 @@
       position: absolute; top: 20px; right: 20px;
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
       border: 3px solid var(--stamp-red); padding: 6px 14px;
-      transform: rotate(12deg); font-size: 0.9rem; letter-spacing: 3px;
-      opacity: 0.8;
+      transform: rotate(12deg); font-size: 0.85rem; letter-spacing: 3px; opacity: 0.7;
     }
 
     /* ============ HALL OF SHAME ============ */
-    .shame-entries { display: flex; flex-direction: column; gap: 24px; margin: 40px 0; }
+    .shame-entries { display: flex; flex-direction: column; gap: 20px; margin: 40px 0; }
     .shame-entry {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(139,0,0,0.2);
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.12);
       border-radius: 8px; padding: 24px; display: flex; gap: 20px; align-items: flex-start;
     }
     .shame-rank {
-      font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 900;
-      color: var(--stamp-red); min-width: 50px; text-align: center;
+      font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 900;
+      color: var(--stamp-red); min-width: 45px; text-align: center;
     }
-    .shame-content h4 {
-      font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 4px;
-    }
+    .shame-content h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: 4px; color: var(--off-white); }
     .shame-content .shame-source {
-      font-family: 'Special Elite', monospace; font-size: 0.75rem;
+      font-family: 'Special Elite', monospace; font-size: 0.7rem;
       color: var(--stamp-red); letter-spacing: 2px; margin-bottom: 8px;
     }
-    .shame-content p { font-size: 0.95rem; opacity: 0.85; }
-    .shame-stars { color: var(--stamp-red); margin-top: 8px; }
+    .shame-content p { font-size: 0.92rem; }
+    .shame-stars { color: var(--stamp-red); margin-top: 8px; font-size: 0.88rem; }
 
     /* ============ QUIZ ============ */
     .quiz-container { margin: 40px 0; }
     .quiz-question-box {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(139,0,0,0.2);
-      border-radius: 8px; padding: 24px; margin-bottom: 20px;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.12);
+      border-radius: 8px; padding: 24px; margin-bottom: 16px;
     }
-    .quiz-question-box h4 {
-      font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 16px;
-    }
+    .quiz-question-box h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: 14px; color: var(--off-white); }
     .quiz-option {
       display: block; width: 100%; text-align: left; padding: 12px 16px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 6px; color: var(--off-white); cursor: pointer;
-      margin-bottom: 8px; font-size: 0.95rem; transition: all 0.3s;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px; color: var(--text-body); cursor: pointer;
+      margin-bottom: 8px; font-size: 0.92rem; transition: all 0.3s;
       font-family: 'Source Sans Pro', sans-serif;
     }
-    .quiz-option:hover { background: rgba(139,0,0,0.15); border-color: var(--stamp-red); }
-    .quiz-option.selected { background: rgba(139,0,0,0.2); border-color: var(--stamp-red); }
+    .quiz-option:hover { background: rgba(139,0,0,0.1); border-color: var(--stamp-red); }
+    .quiz-option.selected { background: rgba(139,0,0,0.15); border-color: var(--stamp-red); color: var(--off-white); }
     .quiz-result {
-      background: linear-gradient(135deg, rgba(139,0,0,0.2), rgba(0,0,0,0.3));
+      background: linear-gradient(135deg, rgba(139,0,0,0.15), rgba(0,0,0,0.3));
       border: 2px solid var(--stamp-red); border-radius: 8px; padding: 32px;
       text-align: center; display: none; margin-top: 20px;
     }
     .quiz-result h3 {
-      font-family: 'Playfair Display', serif; font-size: 1.8rem;
+      font-family: 'Playfair Display', serif; font-size: 1.6rem;
       color: var(--stamp-red); margin-bottom: 12px;
     }
     .quiz-result .score-breakdown {
-      font-family: 'Special Elite', monospace; font-size: 0.9rem;
-      color: var(--stamp-red); margin-top: 16px;
+      font-family: 'Special Elite', monospace; font-size: 0.85rem;
+      color: var(--stamp-red); margin-top: 16px; text-align: left;
+      max-width: 600px; margin-left: auto; margin-right: auto;
     }
 
     /* ============ MERCH ============ */
     .merch-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 24px; margin: 40px 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px; margin: 40px 0;
     }
     .merch-item {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(139,0,0,0.2);
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.12);
       border-radius: 8px; overflow: hidden; text-align: center;
     }
     .merch-visual {
-      background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
-      padding: 40px 20px; font-size: 3rem; min-height: 160px;
+      background: linear-gradient(135deg, #161616, #0d0d0d);
+      padding: 40px 20px; min-height: 150px;
       display: flex; align-items: center; justify-content: center;
     }
     .merch-visual .merch-text {
@@ -468,103 +431,100 @@
       color: var(--off-white); max-width: 180px;
     }
     .merch-details { padding: 16px; }
-    .merch-details h4 { font-size: 1rem; margin-bottom: 4px; }
+    .merch-details h4 { font-size: 0.95rem; margin-bottom: 4px; color: var(--off-white); }
     .merch-details .merch-price {
       font-family: 'Special Elite', monospace; color: var(--stamp-red); margin-bottom: 12px;
     }
     .merch-btn {
       width: 100%; padding: 10px; background: var(--stamp-red); color: white;
       border: none; border-radius: 4px; cursor: pointer; font-family: 'Special Elite', monospace;
-      font-size: 0.9rem; letter-spacing: 1px; transition: all 0.3s;
+      font-size: 0.85rem; letter-spacing: 1px; transition: all 0.3s;
     }
-    .merch-btn:hover { background: var(--blood-red); }
+    .merch-btn:hover { background: #ee3333; }
     .merch-btn.carted {
-      background: rgba(255,255,255,0.1); color: var(--stamp-red); font-size: 0.75rem;
+      background: rgba(255,255,255,0.08); color: var(--stamp-red); font-size: 0.72rem;
       letter-spacing: 0;
     }
 
     /* ============ DOCUMENTARY ============ */
     .documentary {
-      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.3);
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.2);
       border-radius: 8px; overflow: hidden; margin: 40px 0;
     }
     .doc-poster {
-      background: linear-gradient(180deg, rgba(139,0,0,0.3), var(--dark-bg));
+      background: linear-gradient(180deg, rgba(139,0,0,0.25), var(--dark-bg));
       padding: 60px 24px; text-align: center;
     }
-    .doc-poster .doc-icon { font-size: 64px; margin-bottom: 16px; }
-    .doc-poster h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 8px; }
+    .doc-poster .doc-icon { font-size: 56px; margin-bottom: 16px; }
+    .doc-poster h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; color: var(--off-white); }
     .doc-poster .doc-sub {
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
-      letter-spacing: 2px; font-size: 0.85rem;
+      letter-spacing: 2px; font-size: 0.82rem;
     }
     .doc-info { padding: 24px; }
-    .doc-info p { font-size: 0.95rem; opacity: 0.8; }
+    .doc-info p { font-size: 0.95rem; }
     .doc-info .coming-soon {
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
-      margin-top: 16px; font-size: 0.9rem;
+      margin-top: 16px; font-size: 0.85rem;
     }
 
     /* ============ NEWSLETTER ============ */
     .newsletter {
       background: linear-gradient(135deg, #1a0000, #0a0a0a);
-      border: 1px solid rgba(139,0,0,0.3);
+      border: 1px solid rgba(139,0,0,0.2);
       padding: 48px; text-align: center; border-radius: 8px; margin: 40px 0;
     }
-    .newsletter h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 12px; }
-    .newsletter p { opacity: 0.7; margin-bottom: 24px; }
+    .newsletter h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 12px; color: var(--off-white); }
+    .newsletter p { opacity: 0.6; margin-bottom: 24px; }
     .newsletter-form {
-      display: flex; gap: 12px; max-width: 500px; margin: 0 auto;
+      display: flex; gap: 12px; max-width: 480px; margin: 0 auto;
       flex-wrap: wrap; justify-content: center;
     }
     .newsletter-form input {
-      flex: 1; min-width: 240px; padding: 12px 16px;
-      border: 1px solid rgba(139,0,0,0.4); background: rgba(255,255,255,0.05);
-      color: var(--off-white); border-radius: 4px; font-size: 1rem;
+      flex: 1; min-width: 220px; padding: 12px 16px;
+      border: 1px solid rgba(139,0,0,0.3); background: rgba(255,255,255,0.04);
+      color: var(--off-white); border-radius: 4px; font-size: 0.95rem;
     }
-    .newsletter-form input::placeholder { color: rgba(232,224,212,0.4); }
+    .newsletter-form input::placeholder { color: rgba(232,224,212,0.3); }
     .newsletter-form button {
       padding: 12px 28px; background: var(--stamp-red); color: white;
       border: none; border-radius: 4px; font-family: 'Special Elite', monospace;
       font-size: 1rem; letter-spacing: 2px; cursor: pointer; transition: background 0.3s;
     }
-    .newsletter-form button:hover { background: var(--blood-red); }
+    .newsletter-form button:hover { background: #ee3333; }
 
     /* ============ STRING BOARD ============ */
     .string-board {
       position: relative; background: #2a1a0a; border: 8px solid #3d2b1f;
-      border-radius: 4px; min-height: 400px; margin: 40px 0; padding: 30px;
-      overflow: hidden;
-      box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
+      border-radius: 4px; min-height: 380px; margin: 40px 0; padding: 30px;
+      overflow: hidden; box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
     }
     .board-pin {
       position: absolute; background: rgba(255,255,255,0.9); border-radius: 4px;
-      padding: 8px 12px; font-size: 0.75rem; color: #222; max-width: 150px;
+      padding: 8px 12px; font-size: 0.72rem; color: #222; max-width: 150px;
       box-shadow: 2px 2px 8px rgba(0,0,0,0.4); transform: rotate(var(--rot, 0deg));
-      font-family: 'Special Elite', monospace; cursor: default;
+      font-family: 'Special Elite', monospace;
     }
     .board-pin::before {
       content: '📌'; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
-      font-size: 16px;
+      font-size: 14px;
     }
     .board-pin.photo-pin {
-      background: white; padding: 6px 6px 20px; font-size: 2rem; text-align: center;
-      min-width: 70px;
+      background: white; padding: 6px 6px 18px; font-size: 1.8rem; text-align: center;
+      min-width: 65px;
     }
-    .board-pin.photo-pin .pin-caption {
-      font-size: 0.6rem; color: #666; margin-top: 4px;
-    }
+    .board-pin.photo-pin .pin-caption { font-size: 0.55rem; color: #666; margin-top: 4px; }
     .board-center {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       font-family: 'Special Elite', monospace; color: var(--stamp-red);
-      font-size: 1.5rem; text-align: center; z-index: 2;
-      text-shadow: 0 0 20px rgba(204,34,34,0.5);
+      font-size: 1.3rem; text-align: center; z-index: 2;
+      text-shadow: 0 0 20px rgba(204,34,34,0.4);
     }
 
     /* ============ FOOTER ============ */
     footer {
       text-align: center; padding: 40px 20px;
-      border-top: 1px solid rgba(139,0,0,0.2); font-size: 0.85rem; opacity: 0.5;
+      border-top: 1px solid rgba(139,0,0,0.15); font-size: 0.82rem; opacity: 0.4;
     }
     footer a { color: var(--stamp-red); text-decoration: none; }
 
@@ -575,16 +535,32 @@
       .shame-entry { flex-direction: column; }
       .string-board { min-height: 300px; }
       .minutes-doc { padding: 20px; }
+      .section { padding: 60px 20px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- ============ LANDING OVERLAY ============ -->
+  <div id="landing-overlay">
+    <div class="landing-stamp">Classification Level: Grade 10</div>
+    <h1><span class="red">They Lied</span>.edu</h1>
+    <p class="landing-warning">
+      You are about to access information that has been systematically withheld
+      from the public for over one hundred years. What you learn here cannot be unlearned.
+      Your relationship with Chapter 3 will never be the same.
+    </p>
+    <p class="landing-sound">🔊 Sound recommended for the full experience</p>
+    <button class="enter-btn" onclick="enterSite()">I Accept The Truth</button>
+    <p class="landing-fine-print">
+      By proceeding, you acknowledge that electrons do not orbit the nucleus
+      and that Mrs. Henderson knew the whole time.
+    </p>
+  </div>
+
   <!-- Audio -->
-  <audio id="conspiracy-track" loop preload="auto">
-    <!-- MP3 will be added here -->
-  </audio>
-  <button id="audio-control" onclick="toggleAudio()">🔊 Enable Truth Frequency</button>
+  <audio id="conspiracy-track" loop preload="auto" src="track.mp3"></audio>
+  <button id="audio-control" onclick="toggleAudio()">🔇 Mute</button>
 
   <!-- ============ NEWS TICKER ============ -->
   <div class="news-ticker">
@@ -596,13 +572,9 @@
     <div class="classified-stamp">Classified — Grade 10 Curriculum</div>
     <h1><span class="they">They Lied</span>.edu</h1>
     <p class="subtitle">
-      Your high school chemistry teacher knew the Rutherford model was wrong.
+      Your high school chemistry teacher knew the Rutherford–Bohr model was wrong.
       <strong>They taught it anyway.</strong>
     </p>
-    <div class="lie-counter">
-      <span class="number" id="counter">2,847,391</span>
-      <span class="label">students lied to since you opened this page</span>
-    </div>
     <div class="scroll-prompt">▼</div>
   </section>
 
@@ -610,7 +582,7 @@
   <div class="quote-banner">
     <blockquote>"Anyone who is not shocked by quantum theory has not understood it."</blockquote>
     <div class="attribution">
-      — Niels Bohr, the man who KNEW the Rutherford model was a lie (1920)
+      — Niels Bohr, the man who KNEW his own model was a lie (1920)
     </div>
   </div>
 
@@ -636,7 +608,19 @@
       <div class="pill-card lie">
         <div class="pill-label">What they teach you</div>
         <div class="pill-content">
-          <div class="atom-visual">⚛️</div>
+          <div class="pill-svg">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="25" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1"/>
+              <circle cx="70" cy="70" r="45" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1"/>
+              <circle cx="70" cy="70" r="63" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1"/>
+              <circle cx="70" cy="70" r="8" fill="#cc2222"/>
+              <text x="70" y="74" text-anchor="middle" fill="white" font-size="8" font-weight="bold">+</text>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="1.5s" repeatCount="indefinite" path="M95,70 A25,25 0 1,1 94.99,70"/></circle>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="2.2s" repeatCount="indefinite" path="M115,70 A45,45 0 1,1 114.99,70"/></circle>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="2.2s" repeatCount="indefinite" path="M25,70 A45,45 0 1,0 25.01,70"/></circle>
+              <circle r="4" fill="#4a9eff"><animateMotion dur="3s" repeatCount="indefinite" path="M133,70 A63,63 0 1,1 132.99,70"/></circle>
+            </svg>
+          </div>
           <p class="pill-desc">
             Neat circular orbits. Electrons as tiny billiard balls. A solar system you can
             draw on a whiteboard in 30 seconds. <strong>Convenient, isn't it?</strong>
@@ -646,7 +630,40 @@
       <div class="pill-card truth">
         <div class="pill-label">The actual truth</div>
         <div class="pill-content">
-          <div class="atom-visual">☁️</div>
+          <div class="pill-svg">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <defs>
+                <radialGradient id="pill-cloud" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(74,158,255,0.6)"/>
+                  <stop offset="35%" stop-color="rgba(74,158,255,0.3)"/>
+                  <stop offset="65%" stop-color="rgba(74,158,255,0.1)"/>
+                  <stop offset="100%" stop-color="rgba(74,158,255,0)"/>
+                </radialGradient>
+              </defs>
+              <circle cx="70" cy="70" r="55" fill="url(#pill-cloud)" opacity="0.5">
+                <animate attributeName="r" values="52;58;52" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="70" cy="70" r="35" fill="url(#pill-cloud)" opacity="0.6">
+                <animate attributeName="r" values="32;38;32" dur="2.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="70" cy="70" r="18" fill="url(#pill-cloud)" opacity="0.7">
+                <animate attributeName="r" values="16;20;16" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <!-- probability dots -->
+              <circle cx="55" cy="48" r="1.5" fill="#4a9eff" opacity="0.5"/>
+              <circle cx="82" cy="62" r="1.5" fill="#4a9eff" opacity="0.6"/>
+              <circle cx="64" cy="80" r="1.5" fill="#4a9eff" opacity="0.4"/>
+              <circle cx="90" cy="55" r="1.5" fill="#4a9eff" opacity="0.3"/>
+              <circle cx="72" cy="42" r="1.5" fill="#4a9eff" opacity="0.5"/>
+              <circle cx="50" cy="70" r="1.5" fill="#4a9eff" opacity="0.4"/>
+              <circle cx="78" cy="88" r="1.5" fill="#4a9eff" opacity="0.3"/>
+              <circle cx="60" cy="58" r="1.5" fill="#4a9eff" opacity="0.6"/>
+              <circle cx="85" cy="75" r="1.5" fill="#4a9eff" opacity="0.4"/>
+              <circle cx="68" cy="65" r="1.5" fill="#4a9eff" opacity="0.5"/>
+              <circle cx="70" cy="70" r="5" fill="#cc2222"/>
+              <text x="70" y="73" text-anchor="middle" fill="white" font-size="6" font-weight="bold">+</text>
+            </svg>
+          </div>
           <p class="pill-desc">
             Probabilistic wavefunctions. Electron density clouds. A mathematical abstraction
             that requires differential equations to describe.
@@ -661,16 +678,11 @@
   <section class="section">
     <div class="section-subheader">Declassified Science</div>
     <h2 class="section-header">The Two <span class="red">Models</span>, Explained</h2>
-    <p>
-      Let's be real for a moment. No satire, no outrage — just the actual science.
-      Here's what the Bohr model claims, what the quantum mechanical model actually says,
-      and why the difference matters.
-    </p>
 
     <div class="diagram-container">
       <!-- BOHR MODEL -->
       <div class="diagram-box">
-        <div class="diagram-title bohr-title">The Bohr Model (1913)</div>
+        <div class="diagram-title bohr-title">The Rutherford–Bohr Model (1913)</div>
         <div class="diagram-svg">
           <svg id="bohr-svg" width="280" height="280" viewBox="0 0 280 280" onclick="shatterBohr()">
             <defs>
@@ -680,54 +692,67 @@
               </radialGradient>
             </defs>
             <!-- Orbits -->
-            <circle class="orbit-ring" cx="140" cy="140" r="50" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1.5" id="orbit1"/>
-            <circle class="orbit-ring" cx="140" cy="140" r="85" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1.5" id="orbit2"/>
-            <circle class="orbit-ring" cx="140" cy="140" r="120" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1.5" id="orbit3"/>
+            <circle class="orbit-ring" cx="140" cy="140" r="50" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1.5"/>
+            <circle class="orbit-ring" cx="140" cy="140" r="85" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1.5"/>
+            <circle class="orbit-ring" cx="140" cy="140" r="120" fill="none" stroke="rgba(232,224,212,0.2)" stroke-width="1.5"/>
             <!-- Orbit labels -->
-            <text x="195" y="100" fill="rgba(232,224,212,0.4)" font-size="11" font-family="Special Elite">n=1</text>
-            <text x="228" y="78" fill="rgba(232,224,212,0.4)" font-size="11" font-family="Special Elite">n=2</text>
-            <text x="258" y="50" fill="rgba(232,224,212,0.4)" font-size="11" font-family="Special Elite">n=3</text>
+            <text x="195" y="100" fill="rgba(232,224,212,0.35)" font-size="11" font-family="Special Elite">n=1</text>
+            <text x="228" y="78" fill="rgba(232,224,212,0.35)" font-size="11" font-family="Special Elite">n=2</text>
+            <text x="258" y="50" fill="rgba(232,224,212,0.35)" font-size="11" font-family="Special Elite">n=3</text>
             <!-- Nucleus -->
-            <circle cx="140" cy="140" r="16" fill="url(#nucleus-grad)" id="bohr-nucleus"/>
-            <text x="140" y="144" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="Source Sans Pro">+</text>
-            <!-- Electrons (animated) -->
+            <circle cx="140" cy="140" r="16" fill="url(#nucleus-grad)"/>
+            <text x="140" y="144" text-anchor="middle" fill="white" font-size="9" font-weight="bold">+</text>
+            <!-- Electrons animated along circular paths -->
             <g id="bohr-electrons">
-              <circle r="6" fill="#4a9eff" id="e1">
-                <animateMotion dur="2s" repeatCount="indefinite" path="M190,140 A50,50 0 1,1 189.99,140"/>
+              <circle r="6" fill="#4a9eff">
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#orbit-path-1"/>
+                </animateMotion>
               </circle>
-              <circle r="6" fill="#4a9eff" id="e2">
-                <animateMotion dur="2s" repeatCount="indefinite" path="M90,140 A50,50 0 1,1 89.99,140"/>
+              <circle r="6" fill="#4a9eff">
+                <animateMotion dur="2s" repeatCount="indefinite" begin="-1s">
+                  <mpath href="#orbit-path-1"/>
+                </animateMotion>
               </circle>
-              <circle r="6" fill="#4a9eff" id="e3">
-                <animateMotion dur="3.2s" repeatCount="indefinite" path="M225,140 A85,85 0 1,1 224.99,140"/>
+              <circle r="6" fill="#4a9eff">
+                <animateMotion dur="3.2s" repeatCount="indefinite">
+                  <mpath href="#orbit-path-2"/>
+                </animateMotion>
               </circle>
-              <circle r="6" fill="#4a9eff" id="e4">
-                <animateMotion dur="3.2s" repeatCount="indefinite" path="M55,140 A85,85 0 1,0 55.01,140"/>
+              <circle r="6" fill="#4a9eff">
+                <animateMotion dur="3.2s" repeatCount="indefinite" begin="-1.6s">
+                  <mpath href="#orbit-path-2"/>
+                </animateMotion>
               </circle>
-              <circle r="6" fill="#4a9eff" id="e5">
-                <animateMotion dur="4.5s" repeatCount="indefinite" path="M260,140 A120,120 0 1,1 259.99,140"/>
+              <circle r="6" fill="#4a9eff">
+                <animateMotion dur="4.5s" repeatCount="indefinite">
+                  <mpath href="#orbit-path-3"/>
+                </animateMotion>
               </circle>
             </g>
-            <!-- Shattered state (hidden initially) -->
-            <g id="bohr-shattered" style="display:none">
-            </g>
+            <!-- Hidden path definitions for animateMotion -->
+            <defs>
+              <circle id="orbit-path-1" cx="140" cy="140" r="50" fill="none"/>
+              <circle id="orbit-path-2" cx="140" cy="140" r="85" fill="none"/>
+              <circle id="orbit-path-3" cx="140" cy="140" r="120" fill="none"/>
+            </defs>
           </svg>
         </div>
         <div class="bohr-click-hint" id="bohr-hint">👆 Click to shatter the lie</div>
         <div class="diagram-desc">
           <h4>What It Claims</h4>
           <p>
-            The Bohr model (building on Rutherford's 1911 nuclear model) proposes that electrons
-            orbit the nucleus in fixed, circular paths at specific energy levels (n=1, 2, 3...).
-            Each orbit corresponds to a quantized energy state, and electrons can jump between
-            orbits by absorbing or emitting photons of exact energies.
+            The Rutherford–Bohr model proposes that electrons orbit the nucleus in fixed,
+            circular paths at specific energy levels (n=1, 2, 3…). Each orbit corresponds
+            to a quantized energy state, and electrons can jump between orbits by absorbing
+            or emitting photons of exact energies.
           </p>
           <h4>What It Gets Right</h4>
           <ul>
-            <li>Energy levels are quantized (electrons can only exist at certain energies)</li>
+            <li>Energy levels are quantized — electrons can only exist at certain energies</li>
             <li>Correctly predicts hydrogen's emission spectrum</li>
             <li>The nucleus contains most of the atom's mass</li>
-            <li>Electrons have negative charge, nucleus is positive</li>
+            <li>Electrons are negative, the nucleus is positive</li>
           </ul>
           <h4>Where It Falls Apart</h4>
           <ul>
@@ -756,7 +781,6 @@
                 <stop offset="0%" stop-color="#ff6644"/>
                 <stop offset="100%" stop-color="#cc2222"/>
               </radialGradient>
-              <!-- p-orbital lobes -->
               <radialGradient id="p-lobe-top" cx="50%" cy="80%" r="60%">
                 <stop offset="0%" stop-color="rgba(100,200,100,0.6)"/>
                 <stop offset="100%" stop-color="rgba(100,200,100,0)"/>
@@ -765,13 +789,11 @@
                 <stop offset="0%" stop-color="rgba(200,100,100,0.6)"/>
                 <stop offset="100%" stop-color="rgba(200,100,100,0)"/>
               </radialGradient>
-              <!-- d-orbital -->
               <radialGradient id="d-lobe" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stop-color="rgba(180,130,255,0.5)"/>
                 <stop offset="100%" stop-color="rgba(180,130,255,0)"/>
               </radialGradient>
             </defs>
-            <!-- S orbital (default) -->
             <g id="orbital-s">
               <circle cx="140" cy="140" r="100" fill="url(#s-orbital)" opacity="0.6">
                 <animate attributeName="r" values="95;105;95" dur="3s" repeatCount="indefinite"/>
@@ -782,14 +804,10 @@
               <circle cx="140" cy="140" r="35" fill="url(#s-orbital)" opacity="0.7">
                 <animate attributeName="r" values="32;38;32" dur="2s" repeatCount="indefinite"/>
               </circle>
-              <!-- Random probability dots -->
-              <g opacity="0.6" id="s-dots">
-              </g>
               <circle cx="140" cy="140" r="6" fill="url(#nucleus-grad2)"/>
               <text x="140" y="144" text-anchor="middle" fill="white" font-size="9" font-weight="bold">+</text>
               <text x="140" y="260" text-anchor="middle" fill="rgba(232,224,212,0.5)" font-size="12" font-family="Special Elite">1s orbital — spherical</text>
             </g>
-            <!-- P orbital -->
             <g id="orbital-p" style="display:none">
               <ellipse cx="140" cy="80" rx="40" ry="60" fill="url(#p-lobe-top)">
                 <animate attributeName="ry" values="57;63;57" dur="3s" repeatCount="indefinite"/>
@@ -797,14 +815,12 @@
               <ellipse cx="140" cy="200" rx="40" ry="60" fill="url(#p-lobe-bot)">
                 <animate attributeName="ry" values="57;63;57" dur="3s" repeatCount="indefinite"/>
               </ellipse>
-              <!-- Nodal plane indicator -->
               <line x1="60" y1="140" x2="220" y2="140" stroke="rgba(232,224,212,0.15)" stroke-width="1" stroke-dasharray="4 4"/>
               <text x="230" y="144" fill="rgba(232,224,212,0.3)" font-size="9" font-family="Special Elite">node</text>
               <circle cx="140" cy="140" r="6" fill="url(#nucleus-grad2)"/>
               <text x="140" y="144" text-anchor="middle" fill="white" font-size="9" font-weight="bold">+</text>
               <text x="140" y="270" text-anchor="middle" fill="rgba(232,224,212,0.5)" font-size="12" font-family="Special Elite">2p orbital — dumbbell</text>
             </g>
-            <!-- D orbital -->
             <g id="orbital-d" style="display:none">
               <ellipse cx="100" cy="100" rx="35" ry="50" fill="url(#d-lobe)" transform="rotate(-45,100,100)">
                 <animate attributeName="rx" values="33;37;33" dur="3s" repeatCount="indefinite"/>
@@ -818,7 +834,6 @@
               <ellipse cx="180" cy="180" rx="35" ry="50" fill="url(#d-lobe)" transform="rotate(-45,180,180)">
                 <animate attributeName="rx" values="33;37;33" dur="3s" repeatCount="indefinite"/>
               </ellipse>
-              <!-- Nodal planes -->
               <line x1="140" y1="20" x2="140" y2="260" stroke="rgba(232,224,212,0.1)" stroke-width="1" stroke-dasharray="4 4"/>
               <line x1="20" y1="140" x2="260" y2="140" stroke="rgba(232,224,212,0.1)" stroke-width="1" stroke-dasharray="4 4"/>
               <circle cx="140" cy="140" r="6" fill="url(#nucleus-grad2)"/>
@@ -872,7 +887,7 @@
     <blockquote>"God does not play dice with the universe."</blockquote>
     <div class="attribution">
       — Albert Einstein, desperately trying to warn us (1926)
-      <br><small style="opacity:0.5">(He was actually arguing against quantum mechanics, but that doesn't fit our narrative so we'll ignore it)</small>
+      <br><small style="opacity:0.4">(He was actually arguing against quantum mechanics, but that doesn't fit our narrative so we'll ignore it)</small>
     </div>
   </div>
 
@@ -882,47 +897,22 @@
     <h2 class="section-header">A Century of <span class="red">Deception</span></h2>
     <p>The truth has been systematically suppressed for over 100 years. Here is the timeline they don't want you to see:</p>
     <div class="timeline">
-      <div class="timeline-entry">
-        <div class="timeline-year">1911</div>
-        <div class="timeline-event">Ernest Rutherford proposes his model of the atom. It's a rough sketch at best. He himself called it <span class="suppressed">"a preliminary hypothesis."</span> Big Textbook runs with it anyway.</div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">1913</div>
-        <div class="timeline-event">Niels Bohr patches the model with "allowed orbits." A band-aid on a bullet wound. <span class="suppressed">Textbook publishers sign first multi-year printing contracts.</span></div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">1924</div>
-        <div class="timeline-event">Louis de Broglie proves electrons behave as waves. The Rutherford model is now officially indefensible. <span class="suppressed">Papers are quietly filed away.</span></div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">1926</div>
-        <div class="timeline-event">Erwin Schrödinger publishes his wave equation. The nail in the coffin. <span class="suppressed">Curriculum boards "review" the findings and decide to "revisit the issue in a future session."</span> That session never happens.</div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">1927</div>
-        <div class="timeline-event">Heisenberg announces the Uncertainty Principle. You literally <em>cannot</em> know an electron's exact position and momentum simultaneously. <span class="suppressed">Grade 10 textbooks continue showing exact positions.</span></div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">1932</div>
-        <div class="timeline-event">James Chadwick discovers the neutron. Textbook publishers release "updated" editions that add neutrons. <span class="suppressed">They charge $45 for a one-word update.</span></div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">1965</div>
-        <div class="timeline-event">Richard Feynman develops Quantum Electrodynamics, the most accurate theory in all of physics. <span class="suppressed">High school curricula remain unchanged.</span></div>
-      </div>
-      <div class="timeline-entry">
-        <div class="timeline-year">2024</div>
-        <div class="timeline-event"><span class="suppressed">Your cousin's kid comes home from school with a worksheet that has the Rutherford model on it. Nothing has changed. Nothing.</span></div>
-      </div>
+      <div class="timeline-entry"><div class="timeline-year">1911</div><div class="timeline-event">Ernest Rutherford proposes his nuclear model of the atom. It's a rough sketch at best. He himself called it <span class="suppressed">"a preliminary hypothesis."</span> Big Textbook runs with it anyway.</div></div>
+      <div class="timeline-entry"><div class="timeline-year">1913</div><div class="timeline-event">Niels Bohr patches the model with "allowed orbits." A band-aid on a bullet wound. The Rutherford–Bohr model is born. <span class="suppressed">Textbook publishers sign first multi-year printing contracts.</span></div></div>
+      <div class="timeline-entry"><div class="timeline-year">1924</div><div class="timeline-event">Louis de Broglie proves electrons behave as waves. The Bohr model is now officially indefensible. <span class="suppressed">Papers are quietly filed away.</span></div></div>
+      <div class="timeline-entry"><div class="timeline-year">1926</div><div class="timeline-event">Erwin Schrödinger publishes his wave equation. The nail in the coffin. <span class="suppressed">Curriculum boards "review" the findings and decide to "revisit the issue in a future session."</span> That session never happens.</div></div>
+      <div class="timeline-entry"><div class="timeline-year">1927</div><div class="timeline-event">Heisenberg announces the Uncertainty Principle. You literally <em>cannot</em> know an electron's exact position and momentum simultaneously. <span class="suppressed">Grade 10 textbooks continue showing exact positions.</span></div></div>
+      <div class="timeline-entry"><div class="timeline-year">1932</div><div class="timeline-event">James Chadwick discovers the neutron. Textbook publishers release "updated" editions. <span class="suppressed">They charge $45 for a one-word update.</span></div></div>
+      <div class="timeline-entry"><div class="timeline-year">1965</div><div class="timeline-event">Richard Feynman develops Quantum Electrodynamics, the most accurate theory in all of physics. <span class="suppressed">High school curricula remain unchanged.</span></div></div>
+      <div class="timeline-entry"><div class="timeline-year">2024</div><div class="timeline-event"><span class="suppressed">Your cousin's kid comes home from school with a worksheet that has the Bohr model on it. Nothing has changed. Nothing.</span></div></div>
     </div>
   </section>
 
   <!-- ============ STRING BOARD ============ -->
-  <section class="section">
+  <section class="section" style="max-width:900px;">
     <div class="section-subheader">Connect The Dots</div>
     <h2 class="section-header">The <span class="red">Evidence</span> Board</h2>
     <p>We've been mapping the connections. The web of complicity goes deeper than you think.</p>
-
     <div class="string-board" id="string-board">
       <canvas id="string-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
       <div class="board-center">WHO KNEW?</div>
@@ -981,36 +971,21 @@
   <section class="section">
     <div class="section-subheader">Leaked Document</div>
     <h2 class="section-header">Curriculum Board <span class="red">Meeting Minutes</span></h2>
-    <p>The following document was obtained through a freedom of information request filed in <span class="redacted">Ontario, Canada</span>. Several passages have been redacted by the Ministry. We wonder why.</p>
-
+    <p>The following document was obtained through a freedom of information request filed in <span class="redacted">Ontario, Canada</span>. Several passages have been redacted by the Ministry.</p>
     <div class="minutes-doc">
       <div class="stamp-overlay">CONFIDENTIAL</div>
       <h4>Minutes — Provincial Curriculum Review Board</h4>
-      <div class="minutes-meta">
-        Date: <span class="minutes-redacted">September 14, 2019</span> · Location: <span class="minutes-redacted">Queen's Park, Toronto</span> · Attendees: 12 board members, 3 Pearson representatives (observer status)
-      </div>
-
-      <div class="minutes-line"><span class="minutes-speaker">CHAIR:</span> Let's move to Item 7 — the atomic structure unit in the Grade 10 science curriculum. Dr. <span class="minutes-redacted">Patel</span> has submitted a proposal to update the Bohr model section. Dr. <span class="minutes-redacted">Patel</span>, the floor is yours.</div>
-
-      <div class="minutes-line"><span class="minutes-speaker">DR. <span class="minutes-redacted">PATEL</span>:</span> Thank you. As the board is aware, the Bohr model has been superseded for approximately one hundred years. I'm proposing we introduce the quantum mechanical model at the Grade 10 level — even a simplified version would be more scientifically accurate than what we currently teach.</div>
-
-      <div class="minutes-line"><span class="minutes-speaker">BOARD MEMBER 4:</span> With respect, Dr. <span class="minutes-redacted">Patel</span>, have you considered the logistical implications? We're talking about retraining every science teacher in the province.</div>
-
+      <div class="minutes-meta">Date: <span class="minutes-redacted">September 14, 2019</span> · Location: <span class="minutes-redacted">Queen's Park, Toronto</span> · Attendees: 12 board members, 3 Pearson representatives (observer status)</div>
+      <div class="minutes-line"><span class="minutes-speaker">CHAIR:</span> Let's move to Item 7 — the atomic structure unit in the Grade 10 science curriculum. Dr. <span class="minutes-redacted">Patel</span> has submitted a proposal to update the Bohr model section.</div>
+      <div class="minutes-line"><span class="minutes-speaker">DR. <span class="minutes-redacted">PATEL</span>:</span> As the board is aware, the Rutherford–Bohr model has been superseded for approximately one hundred years. I'm proposing we introduce the quantum mechanical model at the Grade 10 level — even a simplified version would be more scientifically accurate.</div>
+      <div class="minutes-line"><span class="minutes-speaker">BOARD MEMBER 4:</span> With respect, have you considered the logistical implications? We're talking about retraining every science teacher in the province.</div>
       <div class="minutes-line"><span class="minutes-speaker">DR. <span class="minutes-redacted">PATEL</span>:</span> They already know it. They learned it in university. We're asking them to pretend they don't.</div>
-
       <div class="minutes-line"><span class="minutes-speaker">BOARD MEMBER 7:</span> What about the textbooks? The current approved materials—</div>
-
       <div class="minutes-line"><span class="minutes-speaker">PEARSON OBSERVER:</span> If I may — and I want to stress I'm here in an advisory capacity only — a curriculum change of this magnitude would necessitate a complete revision cycle. The <span class="minutes-redacted">estimated cost per district would be approximately $2.3 million</span>.</div>
-
       <div class="minutes-line"><span class="minutes-speaker">DR. <span class="minutes-redacted">PATEL</span>:</span> The cost of continuing to teach something incorrect is—</div>
-
-      <div class="minutes-line"><span class="minutes-speaker">CHAIR:</span> Thank you, Dr. <span class="minutes-redacted">Patel</span>. I think we've heard enough on this item. All in favour of tabling the proposal for further review? <em>[9 in favour, 2 opposed, 1 abstention]</em></div>
-
+      <div class="minutes-line"><span class="minutes-speaker">CHAIR:</span> Thank you, Dr. <span class="minutes-redacted">Patel</span>. I think we've heard enough. All in favour of tabling the proposal for further review? <em>[9 in favour, 2 opposed, 1 abstention]</em></div>
       <div class="minutes-line"><span class="minutes-speaker">CHAIR:</span> Motion carried. We'll revisit this at the <span class="minutes-redacted">next review cycle in 2025</span>.</div>
-
-      <div class="minutes-line" style="margin-top:20px;font-style:italic;opacity:0.6;">
-        [Editor's note: The 2025 review cycle was postponed to 2028. No reason was given.]
-      </div>
+      <div class="minutes-line" style="margin-top:20px;font-style:italic;opacity:0.5;">[Editor's note: The 2025 review cycle was postponed to 2028. No reason was given.]</div>
     </div>
   </section>
 
@@ -1019,14 +994,13 @@
     <div class="section-subheader">Dishonourable Mentions</div>
     <h2 class="section-header">The Hall of <span class="red">Shame</span></h2>
     <p>We've reviewed the worst offenders in the textbook world. These diagrams have caused more scientific damage than any experiment gone wrong.</p>
-
     <div class="shame-entries">
       <div class="shame-entry">
         <div class="shame-rank">#1</div>
         <div class="shame-content">
           <h4>"The Classic" — Pearson Chemistry, 14th Edition (2021)</h4>
           <div class="shame-source">PAGE 47, FIGURE 3.2</div>
-          <p>Three perfect concentric circles. Primary-colored electrons evenly spaced like ornaments on a Christmas tree. The nucleus is smiling. <em>The nucleus is smiling.</em> This isn't a textbook — it's propaganda for a universe that doesn't exist. Schrödinger died for this?</p>
+          <p>Three perfect concentric circles. Primary-colored electrons evenly spaced like ornaments on a Christmas tree. The nucleus is smiling. <em>The nucleus is smiling.</em> This isn't a textbook — it's propaganda for a universe that doesn't exist.</p>
           <div class="shame-stars">Accuracy: ⭐ (out of 5) · Propaganda value: ⭐⭐⭐⭐⭐</div>
         </div>
       </div>
@@ -1035,7 +1009,7 @@
         <div class="shame-content">
           <h4>"The Overachiever" — Nelson Science 10 (2019)</h4>
           <div class="shame-source">CHAPTER 2, FIGURE 2.14</div>
-          <p>This one has the audacity to show electron orbits as 3D ellipses — as if adding perspective somehow makes the lie more truthful. It's like upgrading from a 2D lie to a 3D lie. Now in IMAX. The electrons are color-coded by shell, because apparently the deception needed a design upgrade.</p>
+          <p>This one has the audacity to show electron orbits as 3D ellipses — as if adding perspective somehow makes the lie more truthful. It's like upgrading from a 2D lie to a 3D lie. Now in IMAX.</p>
           <div class="shame-stars">Accuracy: ⭐ · Effort put into being wrong: ⭐⭐⭐⭐⭐</div>
         </div>
       </div>
@@ -1044,7 +1018,7 @@
         <div class="shame-content">
           <h4>"The Gaslighter" — McGraw-Hill Chemistry: Matter and Change (2020)</h4>
           <div class="shame-source">PAGE 112, FIGURE 4.8</div>
-          <p>This textbook shows the Bohr model on page 112, then quietly introduces electron clouds on page 389. That's 277 pages of living a lie before the truth appears — buried in a chapter most teachers skip "due to time constraints." The audacity. The sheer, calculated audacity.</p>
+          <p>Shows the Bohr model on page 112, then quietly introduces electron clouds on page 389. That's 277 pages of living a lie before the truth appears — buried in a chapter most teachers skip "due to time constraints."</p>
           <div class="shame-stars">Accuracy: ⭐⭐ (for eventually telling the truth) · Gaslighting: ⭐⭐⭐⭐⭐</div>
         </div>
       </div>
@@ -1053,7 +1027,7 @@
         <div class="shame-content">
           <h4>"The Clip Art Special" — Various Public School Worksheets (2024)</h4>
           <div class="shame-source">DISTRIBUTED IN PHOTOCOPIED FORM, ORIGIN UNKNOWN</div>
-          <p>Not a textbook per se, but a genre. The photocopied worksheet featuring a Bohr model that was clearly drawn in Microsoft Paint circa 2003. The electrons are squares because someone didn't know how to make circles. It's been copied so many times the nucleus is just a grey blob. These worksheets will outlive us all.</p>
+          <p>Not a textbook per se, but a genre. The photocopied worksheet featuring a Bohr model drawn in Microsoft Paint circa 2003. The electrons are squares because someone didn't know how to make circles. It's been copied so many times the nucleus is just a grey blob. These worksheets will outlive us all.</p>
           <div class="shame-stars">Accuracy: ☆ (negative stars) · Immortality: ⭐⭐⭐⭐⭐</div>
         </div>
       </div>
@@ -1089,39 +1063,34 @@
     <div class="section-subheader">Damage Control Debunked</div>
     <h2 class="section-header">Frequently Asked <span class="red">Questions</span></h2>
     <p>We've heard every excuse. Here are our responses.</p>
-
     <div class="faq-item" onclick="toggleFaq(this)">
       <div class="faq-question">"My teacher said it's just a simplification." <span class="arrow">▼</span></div>
       <div class="faq-answer">
-        <p>A "simplification" is rounding π to 3.14. A "simplification" is saying the Earth is a sphere when it's technically an oblate spheroid. Teaching the Bohr model is not a simplification — it's a <em>completely different physical description of reality</em>. Electrons do not orbit. There are no orbits. The orbits do not exist. Saying "it's a simplification" is like saying "the stork brings babies" is a simplification of reproductive biology. Technically, both involve delivery.</p>
+        <p>A "simplification" is rounding π to 3.14. A "simplification" is saying the Earth is a sphere when it's technically an oblate spheroid. Teaching the Bohr model is not a simplification — it's a <em>completely different physical description of reality</em>. Electrons do not orbit. There are no orbits. Saying "it's a simplification" is like saying "the stork brings babies" is a simplification of reproductive biology. Technically, both involve delivery.</p>
         <div class="hostility">— THREAT LEVEL: This is the most common deflection. Your teacher was probably told to say this.</div>
       </div>
     </div>
-
     <div class="faq-item" onclick="toggleFaq(this)">
       <div class="faq-question">"Isn't the Bohr model useful for some things?" <span class="arrow">▼</span></div>
       <div class="faq-answer">
-        <p>...Fine. Yes. The Bohr model correctly predicts the emission spectrum of hydrogen (and only hydrogen). It's useful for introducing the concept of quantized energy levels. It gives students a mental picture to start from. There. We said it. Are you happy? Are you HAPPY, Big Textbook? We admitted your obsolete model has <em>marginal pedagogical utility for exactly one element</em>. But does that justify teaching it as THE model of the atom? No. That's like teaching Flat Earth Theory because "it's useful for short-distance navigation."</p>
+        <p>…Fine. Yes. The Bohr model correctly predicts the emission spectrum of hydrogen (and only hydrogen). It's useful for introducing the concept of quantized energy levels. There. We said it. Are you happy? Are you HAPPY, Big Textbook? We admitted your obsolete model has <em>marginal pedagogical utility for exactly one element</em>. But does that justify teaching it as THE model of the atom? No. That's like teaching Flat Earth Theory because "it's useful for short-distance navigation."</p>
         <div class="hostility">— THREAT LEVEL: This is a reasonable question and we hate that.</div>
       </div>
     </div>
-
     <div class="faq-item" onclick="toggleFaq(this)">
       <div class="faq-question">"Quantum mechanics is too hard for grade 10 students." <span class="arrow">▼</span></div>
       <div class="faq-answer">
-        <p>Grade 10 students can learn TikTok dances with 47 steps, memorize every Pokémon evolution chain, and understand the lore of five interconnected anime universes. But you're telling me they can't grasp "electrons exist in probability clouds instead of fixed orbits"? The concept isn't hard. The math behind it is hard. Nobody's asking 15-year-olds to solve the Schrödinger equation — we're asking them to look at a fuzzy sphere instead of a circle. A <em>fuzzy sphere</em>. You're telling me that's too much?</p>
+        <p>Grade 10 students can learn TikTok dances with 47 steps, memorize every Pokémon evolution chain, and understand the lore of five interconnected anime universes. But you're telling me they can't grasp "electrons exist in probability clouds instead of fixed orbits"? The concept isn't hard. The math behind it is hard. Nobody's asking 15-year-olds to solve the Schrödinger equation — we're asking them to look at a fuzzy sphere instead of a circle. A <em>fuzzy sphere</em>.</p>
         <div class="hostility">— THREAT LEVEL: You are dangerously close to shill territory.</div>
       </div>
     </div>
-
     <div class="faq-item" onclick="toggleFaq(this)">
       <div class="faq-question">"This website is satire, right?" <span class="arrow">▼</span></div>
       <div class="faq-answer">
-        <p>The <em>tone</em> is satire. The <em>science</em> is not. The Bohr model really is wrong. It really has been known to be wrong for a hundred years. Textbook publishers really do charge $300 for books that teach it. Teachers really do know better. The conspiracy theory framing is a joke. The underlying facts are not. Think of us as the court jester who's the only one allowed to tell the king the truth. Except the king is the Ontario curriculum board and the truth is that electrons are wavefunctions.</p>
+        <p>The <em>tone</em> is satire. The <em>science</em> is not. The Rutherford–Bohr model really is wrong. It really has been known to be wrong for a hundred years. Textbook publishers really do charge $300 for books that teach it. Teachers really do know better. The conspiracy theory framing is a joke. The underlying facts are not. Think of us as the court jester who's the only one allowed to tell the king the truth.</p>
         <div class="hostility">— THREAT LEVEL: Self-awareness detected. You might be one of us.</div>
       </div>
     </div>
-
     <div class="faq-item" onclick="toggleFaq(this)">
       <div class="faq-question">"You should blame the curriculum, not the teachers." <span class="arrow">▼</span></div>
       <div class="faq-answer">
@@ -1135,45 +1104,14 @@
   <section class="section">
     <div class="section-subheader">Field Guide</div>
     <h2 class="section-header">How to Spot a <span class="red">Big Textbook Shill</span></h2>
-    <p>They walk among us. In faculty lounges, in online forums, in your family's group chat. Here's how to identify agents of the textbook-industrial complex.</p>
-
+    <p>They walk among us. In faculty lounges, in online forums, in your family's group chat.</p>
     <div class="shill-cards">
-      <div class="shill-card">
-        <div class="shill-icon">🎓</div>
-        <h4>The Apologist Professor</h4>
-        <p>Says things like "models are tools, not truth" and "pedagogical scaffolding is important." Has a suspiciously large collection of complimentary textbook review copies. Has never once questioned why their "review copies" arrive by courier from a Pearson VP.</p>
-        <div class="threat-level threat-med">THREAT LEVEL: MODERATE</div>
-      </div>
-      <div class="shill-card">
-        <div class="shill-icon">👨‍👩‍👧</div>
-        <h4>The Concerned Parent</h4>
-        <p>"My child is doing fine with the current curriculum." Doing fine is not the same as being told the truth, Karen. Your child also did fine believing in Santa Claus. We don't build national curricula around it.</p>
-        <div class="threat-level threat-low">THREAT LEVEL: LOW (just misguided)</div>
-      </div>
-      <div class="shill-card">
-        <div class="shill-icon">📚</div>
-        <h4>The Textbook Rep</h4>
-        <p>Visits schools with branded pens and "sample chapters." Makes casual remarks like "the next edition has minor updates" (it doesn't). Can recite the price list from memory. Eyes glaze over when you mention wavefunctions.</p>
-        <div class="threat-level threat-high">THREAT LEVEL: HIGH — Direct agent of Big Textbook</div>
-      </div>
-      <div class="shill-card">
-        <div class="shill-icon">🧑‍💻</div>
-        <h4>The Reddit Commenter</h4>
-        <p>Posts "actually, the Bohr model is a perfectly valid approximation for introductory courses" with suspicious regularity. Account is 3 months old. Only comments on chemistry education threads. Coincidence? We think not.</p>
-        <div class="threat-level threat-high">THREAT LEVEL: HIGH — Likely paid operative</div>
-      </div>
-      <div class="shill-card">
-        <div class="shill-icon">👴</div>
-        <h4>The "Back In My Day" Uncle</h4>
-        <p>"I learned the Bohr model and I turned out fine." Did you, though? Did you really? Can you explain why copper is conductive? Can you explain why gold is yellow? No? Because the Bohr model can't explain that either. You turned out <em>uninformed</em>, uncle.</p>
-        <div class="threat-level threat-low">THREAT LEVEL: LOW (but loud at Thanksgiving)</div>
-      </div>
-      <div class="shill-card">
-        <div class="shill-icon">🤖</div>
-        <h4>The AI Chatbot</h4>
-        <p>Ask an AI to "draw an atom" and watch it produce a Bohr model every single time. The training data is compromised. Big Textbook has infiltrated the machine learning pipeline. Even artificial intelligence has been indoctrinated. No one is safe.</p>
-        <div class="threat-level threat-med">THREAT LEVEL: MODERATE — Unwitting accomplice</div>
-      </div>
+      <div class="shill-card"><div class="shill-icon">🎓</div><h4>The Apologist Professor</h4><p>Says things like "models are tools, not truth" and "pedagogical scaffolding is important." Has a suspiciously large collection of complimentary textbook review copies.</p><div class="threat-level threat-med">THREAT LEVEL: MODERATE</div></div>
+      <div class="shill-card"><div class="shill-icon">👨‍👩‍👧</div><h4>The Concerned Parent</h4><p>"My child is doing fine with the current curriculum." Doing fine is not the same as being told the truth, Karen. Your child also did fine believing in Santa Claus.</p><div class="threat-level threat-low">THREAT LEVEL: LOW (just misguided)</div></div>
+      <div class="shill-card"><div class="shill-icon">📚</div><h4>The Textbook Rep</h4><p>Visits schools with branded pens and "sample chapters." Makes casual remarks like "the next edition has minor updates" (it doesn't). Eyes glaze over when you mention wavefunctions.</p><div class="threat-level threat-high">THREAT LEVEL: HIGH — Direct agent</div></div>
+      <div class="shill-card"><div class="shill-icon">🧑‍💻</div><h4>The Reddit Commenter</h4><p>Posts "actually, the Bohr model is a perfectly valid approximation" with suspicious regularity. Account is 3 months old. Only comments on chemistry education threads.</p><div class="threat-level threat-high">THREAT LEVEL: HIGH — Likely paid operative</div></div>
+      <div class="shill-card"><div class="shill-icon">👴</div><h4>The "Back In My Day" Uncle</h4><p>"I learned the Bohr model and I turned out fine." Did you, though? Can you explain why gold is yellow? No? Because the Bohr model can't explain that either.</p><div class="threat-level threat-low">THREAT LEVEL: LOW (but loud at Thanksgiving)</div></div>
+      <div class="shill-card"><div class="shill-icon">🤖</div><h4>The AI Chatbot</h4><p>Ask an AI to "draw an atom" and watch it produce a Bohr model every single time. The training data is compromised. Big Textbook has infiltrated the machine learning pipeline.</p><div class="threat-level threat-med">THREAT LEVEL: MODERATE — Unwitting accomplice</div></div>
     </div>
   </section>
 
@@ -1181,38 +1119,36 @@
   <section class="section">
     <div class="section-subheader">Self-Assessment</div>
     <h2 class="section-header">Were <span class="red">You</span> Lied To?</h2>
-    <p>Take this brief diagnostic assessment to determine your exposure level. Answer honestly — your future self is counting on it.</p>
-
+    <p>Take this brief diagnostic assessment to determine your exposure level.</p>
     <div class="quiz-container" id="quiz-container">
       <div class="quiz-question-box" data-q="0">
         <h4>Question 1: In your high school chemistry class, how was the atom depicted?</h4>
-        <button class="quiz-option" onclick="selectOption(this, 0)">A) As a miniature solar system with circular orbits</button>
-        <button class="quiz-option" onclick="selectOption(this, 0)">B) As a probability cloud described by wavefunctions</button>
-        <button class="quiz-option" onclick="selectOption(this, 0)">C) We didn't cover atoms</button>
-        <button class="quiz-option" onclick="selectOption(this, 0)">D) I was homeschooled and my parent drew something... concerning</button>
+        <button class="quiz-option" onclick="selectOption(this,0)">A) As a miniature solar system with circular orbits</button>
+        <button class="quiz-option" onclick="selectOption(this,0)">B) As a probability cloud described by wavefunctions</button>
+        <button class="quiz-option" onclick="selectOption(this,0)">C) We didn't cover atoms</button>
+        <button class="quiz-option" onclick="selectOption(this,0)">D) I was homeschooled and my parent drew something… concerning</button>
       </div>
       <div class="quiz-question-box" data-q="1">
-        <h4>Question 2: Did your teacher ever mention that the model they were teaching was known to be incorrect?</h4>
-        <button class="quiz-option" onclick="selectOption(this, 1)">A) No, never</button>
-        <button class="quiz-option" onclick="selectOption(this, 1)">B) They hinted at it with a pained expression</button>
-        <button class="quiz-option" onclick="selectOption(this, 1)">C) They mentioned "more advanced models" exist (classic cover-up language)</button>
-        <button class="quiz-option" onclick="selectOption(this, 1)">D) My teacher openly wept while drawing the Bohr model</button>
+        <h4>Question 2: Did your teacher ever mention that the Bohr model was known to be incorrect?</h4>
+        <button class="quiz-option" onclick="selectOption(this,1)">A) No, never</button>
+        <button class="quiz-option" onclick="selectOption(this,1)">B) They hinted at it with a pained expression</button>
+        <button class="quiz-option" onclick="selectOption(this,1)">C) They mentioned "more advanced models" exist</button>
+        <button class="quiz-option" onclick="selectOption(this,1)">D) My teacher openly wept while drawing the Bohr model</button>
       </div>
       <div class="quiz-question-box" data-q="2">
         <h4>Question 3: How much did your textbook cost?</h4>
-        <button class="quiz-option" onclick="selectOption(this, 2)">A) $0 (school-provided, taxpayer-funded lies)</button>
-        <button class="quiz-option" onclick="selectOption(this, 2)">B) $50-$150 (mid-range deception)</button>
-        <button class="quiz-option" onclick="selectOption(this, 2)">C) $150-$300 (premium falsehood experience)</button>
-        <button class="quiz-option" onclick="selectOption(this, 2)">D) $300+ (you are personally funding Big Textbook's yacht)</button>
+        <button class="quiz-option" onclick="selectOption(this,2)">A) $0 (school-provided, taxpayer-funded lies)</button>
+        <button class="quiz-option" onclick="selectOption(this,2)">B) $50–$150 (mid-range deception)</button>
+        <button class="quiz-option" onclick="selectOption(this,2)">C) $150–$300 (premium falsehood experience)</button>
+        <button class="quiz-option" onclick="selectOption(this,2)">D) $300+ (you are personally funding Big Textbook's yacht)</button>
       </div>
       <div class="quiz-question-box" data-q="3">
         <h4>Question 4: Can you name the four quantum numbers?</h4>
-        <button class="quiz-option" onclick="selectOption(this, 3)">A) n, l, m_l, m_s (I've done my own research)</button>
-        <button class="quiz-option" onclick="selectOption(this, 3)">B) I know there are quantum numbers but not their names</button>
-        <button class="quiz-option" onclick="selectOption(this, 3)">C) The what now?</button>
-        <button class="quiz-option" onclick="selectOption(this, 3)">D) Are those the numbers from Lost?</button>
+        <button class="quiz-option" onclick="selectOption(this,3)">A) n, l, m_l, m_s (I've done my own research)</button>
+        <button class="quiz-option" onclick="selectOption(this,3)">B) I know there are quantum numbers but not their names</button>
+        <button class="quiz-option" onclick="selectOption(this,3)">C) The what now?</button>
+        <button class="quiz-option" onclick="selectOption(this,3)">D) Are those the numbers from Lost?</button>
       </div>
-
       <div class="quiz-result" id="quiz-result">
         <h3 id="quiz-verdict"></h3>
         <p id="quiz-desc"></p>
@@ -1225,73 +1161,16 @@
   <section class="section">
     <div class="section-subheader">Spread The Truth</div>
     <h2 class="section-header">Official <span class="red">Merch</span></h2>
-    <p>Wear the truth. Drink from it. Stick it on your car. Every purchase funds the movement.*</p>
-
+    <p>Wear the truth. Drink from it. Stick it on your car.*</p>
     <div class="merch-grid">
-      <div class="merch-item">
-        <div class="merch-visual">
-          <div class="merch-text" style="font-size:1.4rem;">ORBITALS<br>≠<br>ORBITS</div>
-        </div>
-        <div class="merch-details">
-          <h4>The Statement Tee</h4>
-          <div class="merch-price">$29.99</div>
-          <button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button>
-        </div>
-      </div>
-      <div class="merch-item">
-        <div class="merch-visual">
-          <div class="merch-text" style="font-size:0.85rem;">My other model is<br><span style="font-size:1.8rem;">quantum<br>mechanical</span></div>
-        </div>
-        <div class="merch-details">
-          <h4>Bumper Sticker</h4>
-          <div class="merch-price">$4.99</div>
-          <button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button>
-        </div>
-      </div>
-      <div class="merch-item">
-        <div class="merch-visual">
-          <div class="merch-text" style="font-size:0.75rem;">I survived<br>Grade 10 Chemistry<br>and all I got was this<br><span style="font-size:1.3rem;color:var(--stamp-red);">WRONG MODEL</span></div>
-        </div>
-        <div class="merch-details">
-          <h4>The Mug of Truth</h4>
-          <div class="merch-price">$16.99</div>
-          <button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button>
-        </div>
-      </div>
-      <div class="merch-item">
-        <div class="merch-visual">
-          <div class="merch-text" style="font-size:1.8rem;">Ĥψ = Eψ</div>
-        </div>
-        <div class="merch-details">
-          <h4>The "Real Equation" Hoodie</h4>
-          <div class="merch-price">$54.99</div>
-          <button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button>
-        </div>
-      </div>
-      <div class="merch-item">
-        <div class="merch-visual">
-          <div class="merch-text" style="font-size:0.7rem;">HAVE YOU OR A LOVED ONE<br>BEEN EXPOSED TO THE<br><span style="font-size:1.2rem;color:var(--stamp-red);">BOHR MODEL?</span><br>YOU MAY BE ENTITLED TO<br>COMPENSATION</div>
-        </div>
-        <div class="merch-details">
-          <h4>The Class Action Poster</h4>
-          <div class="merch-price">$12.99</div>
-          <button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button>
-        </div>
-      </div>
-      <div class="merch-item">
-        <div class="merch-visual">
-          <div class="merch-text" style="font-size:0.85rem;">PAGE<br><span style="font-size:3rem;color:var(--stamp-red);">47</span><br>NEVER FORGET</div>
-        </div>
-        <div class="merch-details">
-          <h4>The Memorial Pin</h4>
-          <div class="merch-price">$7.99</div>
-          <button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button>
-        </div>
-      </div>
+      <div class="merch-item"><div class="merch-visual"><div class="merch-text" style="font-size:1.4rem;">ORBITALS<br>≠<br>ORBITS</div></div><div class="merch-details"><h4>The Statement Tee</h4><div class="merch-price">$29.99</div><button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button></div></div>
+      <div class="merch-item"><div class="merch-visual"><div class="merch-text" style="font-size:0.85rem;">My other model is<br><span style="font-size:1.8rem;">quantum<br>mechanical</span></div></div><div class="merch-details"><h4>Bumper Sticker</h4><div class="merch-price">$4.99</div><button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button></div></div>
+      <div class="merch-item"><div class="merch-visual"><div class="merch-text" style="font-size:0.75rem;">I survived<br>Grade 10 Chemistry<br>and all I got was this<br><span style="font-size:1.3rem;color:var(--stamp-red);">WRONG MODEL</span></div></div><div class="merch-details"><h4>The Mug of Truth</h4><div class="merch-price">$16.99</div><button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button></div></div>
+      <div class="merch-item"><div class="merch-visual"><div class="merch-text" style="font-size:1.8rem;">Ĥψ = Eψ</div></div><div class="merch-details"><h4>The "Real Equation" Hoodie</h4><div class="merch-price">$54.99</div><button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button></div></div>
+      <div class="merch-item"><div class="merch-visual"><div class="merch-text" style="font-size:0.7rem;">HAVE YOU OR A LOVED ONE<br>BEEN EXPOSED TO THE<br><span style="font-size:1.2rem;color:var(--stamp-red);">BOHR MODEL?</span><br>YOU MAY BE ENTITLED TO<br>COMPENSATION</div></div><div class="merch-details"><h4>The Class Action Poster</h4><div class="merch-price">$12.99</div><button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button></div></div>
+      <div class="merch-item"><div class="merch-visual"><div class="merch-text" style="font-size:0.85rem;">PAGE<br><span style="font-size:3rem;color:var(--stamp-red);">47</span><br>NEVER FORGET</div></div><div class="merch-details"><h4>The Memorial Pin</h4><div class="merch-price">$7.99</div><button class="merch-btn" onclick="addToCart(this)">ADD TO CART</button></div></div>
     </div>
-    <p style="font-size:0.75rem;opacity:0.3;text-align:center;margin-top:12px;">
-      *This is a comedy website. There is no merch. But there should be.
-    </p>
+    <p style="font-size:0.72rem;opacity:0.25;text-align:center;margin-top:12px;">*This is a comedy website. There is no merch. But there should be.</p>
   </section>
 
   <!-- ============ DO YOUR OWN RESEARCH ============ -->
@@ -1300,22 +1179,10 @@
     <h2 class="section-header">Do Your Own <span class="red">Research</span></h2>
     <p>Don't take our word for it. Read the primary sources. (Fair warning: they used math to make it harder for you to understand. Classic.)</p>
     <div class="research-links">
-      <a href="https://arxiv.org/abs/quant-ph/0605180" target="_blank" class="research-link">
-        <span class="link-tag">Suppressed Document #1</span>
-        "Introduction to Quantum Mechanics" — 97 pages of what they could have taught you instead of drawing circles
-      </a>
-      <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation" target="_blank" class="research-link">
-        <span class="link-tag">Suppressed Document #2</span>
-        The Schrödinger Equation — The 1926 paper that ended the debate. Warning: contains partial differential equations (this is how they keep you out)
-      </a>
-      <a href="https://en.wikipedia.org/wiki/Atomic_orbital" target="_blank" class="research-link">
-        <span class="link-tag">Suppressed Document #3</span>
-        Atomic Orbitals — What your atom ACTUALLY looks like. Spoiler: not a solar system. More like a haunted cloud having an identity crisis.
-      </a>
-      <a href="https://en.wikipedia.org/wiki/Bohr_model#Shortcomings" target="_blank" class="research-link">
-        <span class="link-tag">The Smoking Gun</span>
-        "Shortcomings of the Bohr Model" — Wikipedia literally has an entire section about why it's wrong. It's not even hidden. They're flaunting it.
-      </a>
+      <a href="https://arxiv.org/abs/quant-ph/0605180" target="_blank" class="research-link"><span class="link-tag">Suppressed Document #1</span>"Introduction to Quantum Mechanics" — 97 pages of what they could have taught you instead of drawing circles</a>
+      <a href="https://en.wikipedia.org/wiki/Schr%C3%B6dinger_equation" target="_blank" class="research-link"><span class="link-tag">Suppressed Document #2</span>The Schrödinger Equation — The 1926 paper that ended the debate. Warning: contains partial differential equations</a>
+      <a href="https://en.wikipedia.org/wiki/Atomic_orbital" target="_blank" class="research-link"><span class="link-tag">Suppressed Document #3</span>Atomic Orbitals — What your atom ACTUALLY looks like. More like a haunted cloud having an identity crisis.</a>
+      <a href="https://en.wikipedia.org/wiki/Bohr_model#Shortcomings" target="_blank" class="research-link"><span class="link-tag">The Smoking Gun</span>"Shortcomings of the Bohr Model" — Wikipedia literally has an entire section about why it's wrong. They're flaunting it.</a>
     </div>
   </section>
 
@@ -1340,7 +1207,7 @@
       <a href="#">About Us (Redacted)</a> ·
       <a href="#">Contact (Encrypted)</a>
     </p>
-    <p style="margin-top: 24px; font-size: 0.75rem; opacity: 0.3;">
+    <p style="margin-top: 24px; font-size: 0.72rem; opacity: 0.25;">
       This is a satire website. Your high school teachers were doing their best.
       The Bohr model is a useful pedagogical simplification.
       Please don't yell at Mrs. Henderson.
@@ -1348,32 +1215,53 @@
   </footer>
 
   <script>
+    // ============ LANDING + AUDIO AUTOPLAY ============
+    const track = document.getElementById('conspiracy-track');
+    const audioBtn = document.getElementById('audio-control');
+    let audioPlaying = false;
+
+    function enterSite() {
+      document.getElementById('landing-overlay').classList.add('hidden');
+      // Start audio
+      track.volume = 0.45;
+      track.play().then(() => {
+        audioPlaying = true;
+        audioBtn.style.display = 'block';
+        audioBtn.textContent = '🔇 Mute';
+      }).catch(() => {
+        audioBtn.style.display = 'block';
+        audioBtn.textContent = '🔊 Unmute';
+      });
+    }
+
+    function toggleAudio() {
+      if (audioPlaying) {
+        track.pause();
+        audioPlaying = false;
+        audioBtn.textContent = '🔊 Unmute';
+      } else {
+        track.play().catch(() => {});
+        audioPlaying = true;
+        audioBtn.textContent = '🔇 Mute';
+      }
+    }
+
     // ============ NEWS TICKER ============
     const tickerItems = [
       'BREAKING: Grade 10 textbook found still using Bohr model — students "shaken"',
       'DEVELOPING: Pearson releases "new" edition — changes font on page 47, charges $45 more',
       'LEAKED: Curriculum board member seen lunching with textbook lobbyist',
-      'OPINION: "If the Bohr model is a simplification, so is saying 2+2=5" — Dr. Anonymous',
       'EXCLUSIVE: Teacher breaks silence — "I knew. We all knew."',
-      'INVESTIGATION: Where does your textbook money actually go? (Hint: not to updating the atom)',
-      'ALERT: Local student asks "but what about electron clouds?" — teacher reportedly "froze"',
-      'SHOCKING: University professor admits spending first 3 weeks of Physics 101 un-teaching high school',
+      'ALERT: Student asks "but what about electron clouds?" — teacher reportedly "froze"',
+      'SHOCKING: University professor admits spending first 3 weeks un-teaching high school',
       'RECALL NOTICE: All copies of "Chemistry: The Central Science" should be considered compromised',
-      'BREAKING: Heisenberg uncertainty principle still not in grade 10 curriculum — "uncertain" when it will be added',
+      'BREAKING: Heisenberg uncertainty principle still not in grade 10 curriculum',
       'JUST IN: Student who asked about orbitals during Bohr model lesson sent to principal\'s office',
       'REPORT: 97% of people shown an electron cloud diagram said "that\'s way cooler than circles"',
     ];
     const tickerInner = document.getElementById('ticker-inner');
     const tickerHTML = tickerItems.map(t => `<span class="ticker-item">${t}</span>`).join('');
-    tickerInner.innerHTML = tickerHTML + tickerHTML; // duplicate for seamless loop
-
-    // ============ LIE COUNTER ============
-    let count = 2847391;
-    const counterEl = document.getElementById('counter');
-    setInterval(() => {
-      count += Math.floor(Math.random() * 3) + 3;
-      counterEl.textContent = count.toLocaleString();
-    }, 1000);
+    tickerInner.innerHTML = tickerHTML + tickerHTML;
 
     // ============ BOHR SHATTER ============
     let bohrShattered = false;
@@ -1382,45 +1270,24 @@
       bohrShattered = true;
       document.getElementById('bohr-hint').textContent = '💥 The truth is revealed';
       document.getElementById('bohr-hint').style.color = '#5cb85c';
-
       const electrons = document.getElementById('bohr-electrons');
       const orbits = document.querySelectorAll('.orbit-ring');
-
-      // Fade out orbits
-      orbits.forEach(o => {
-        o.style.transition = 'opacity 1s';
-        o.style.opacity = '0';
-      });
-
-      // Get SVG element
-      const svg = document.getElementById('bohr-svg');
-
-      // Replace electrons with scattered probability dots
+      orbits.forEach(o => { o.style.transition = 'opacity 1s'; o.style.opacity = '0'; });
       setTimeout(() => {
         electrons.innerHTML = '';
-        // Create probability cloud
         for (let i = 0; i < 120; i++) {
           const angle = Math.random() * Math.PI * 2;
-          // Use gaussian-ish distribution
           const r = Math.abs((Math.random() + Math.random() + Math.random()) / 3) * 110;
           const x = 140 + Math.cos(angle) * r;
           const y = 140 + Math.sin(angle) * r;
           const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          dot.setAttribute('cx', x);
-          dot.setAttribute('cy', y);
-          dot.setAttribute('r', 2);
+          dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('r', 2);
           dot.setAttribute('fill', '#4a9eff');
-          dot.setAttribute('opacity', 0.3 + Math.random() * 0.4);
-          dot.style.transition = `all ${0.5 + Math.random()}s ease-out`;
-          dot.style.opacity = '0';
+          const op = 0.3 + Math.random() * 0.4;
+          dot.setAttribute('opacity', '0');
+          dot.style.transition = `opacity ${0.5 + Math.random()}s ease-out`;
           electrons.appendChild(dot);
-
-          // Animate in
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              dot.style.opacity = dot.getAttribute('opacity');
-            });
-          });
+          requestAnimationFrame(() => requestAnimationFrame(() => dot.setAttribute('opacity', op)));
         }
       }, 500);
     }
@@ -1429,55 +1296,43 @@
     function showOrbital(type, tabEl) {
       document.querySelectorAll('.orbital-tab').forEach(t => t.classList.remove('active'));
       tabEl.classList.add('active');
-      ['s', 'p', 'd'].forEach(t => {
+      ['s','p','d'].forEach(t => {
         document.getElementById('orbital-' + t).style.display = t === type ? 'block' : 'none';
       });
     }
 
     // ============ FAQ TOGGLE ============
-    function toggleFaq(el) {
-      el.classList.toggle('open');
-    }
+    function toggleFaq(el) { el.classList.toggle('open'); }
 
     // ============ QUIZ ============
-    const quizAnswers = [null, null, null, null];
+    const quizAnswers = [null,null,null,null];
     const quizReveals = [
-      ['You were lied to with the classic method.', 'You were told the truth! ...or you\'re lying to us.', 'You were denied the lie AND the truth. Somehow worse.', 'This is a new category of trauma we hadn\'t anticipated.'],
-      ['Maximum concealment. You are a primary victim.', 'Your teacher was trying to signal. Blink twice if you need help, Mrs. Henderson.', '"More advanced models" = "the truth that we\'re deliberately hiding from you."', 'A rare sighting of the guilt response. There may be hope yet.'],
-      ['Your tax dollars funded lies. You paid in democracy.', 'Mid-range deception. Decent production values on the fraud.', 'Premium lies. Leather-bound. Gilt-edged falsehoods.', 'You personally financed a Pearson executive\'s boat. It\'s named "The Orbital."'],
-      ['You\'ve been deprogrammed. Welcome to the resistance.', 'Partial recovery. The conditioning is loosening.', 'Full victim status confirmed. The system worked as designed.', 'The numbers from Lost are 4, 8, 15, 16, 23, 42. None of them are quantum numbers. This is not a coincidence.']
+      ['You were lied to with the classic method.','You were told the truth! …or you\'re lying to us.','You were denied the lie AND the truth. Somehow worse.','This is a new category of trauma we hadn\'t anticipated.'],
+      ['Maximum concealment. You are a primary victim.','Your teacher was trying to signal. Blink twice if you need help, Mrs. Henderson.','\"More advanced models\" = \"the truth that we\'re deliberately hiding from you.\"','A rare sighting of the guilt response. There may be hope yet.'],
+      ['Your tax dollars funded lies.','Mid-range deception. Decent production values on the fraud.','Premium lies. Leather-bound. Gilt-edged falsehoods.','You personally financed a Pearson executive\'s boat. It\'s named \"The Orbital.\"'],
+      ['You\'ve been deprogrammed. Welcome to the resistance.','Partial recovery. The conditioning is loosening.','Full victim status confirmed. The system worked as designed.','The numbers from Lost are 4, 8, 15, 16, 23, 42. None of them are quantum numbers.']
     ];
-
     function selectOption(btn, qIndex) {
       const box = btn.closest('.quiz-question-box');
       box.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
       btn.classList.add('selected');
-      const options = Array.from(box.querySelectorAll('.quiz-option'));
-      quizAnswers[qIndex] = options.indexOf(btn);
-
-      // Check if all answered
+      quizAnswers[qIndex] = Array.from(box.querySelectorAll('.quiz-option')).indexOf(btn);
       if (quizAnswers.every(a => a !== null)) showQuizResult();
     }
-
     function showQuizResult() {
       const result = document.getElementById('quiz-result');
       result.style.display = 'block';
       document.getElementById('quiz-verdict').textContent = 'DIAGNOSIS: You Were Lied To.';
-      document.getElementById('quiz-desc').textContent =
-        'Regardless of your answers, the conclusion is the same. If you attended any school on planet Earth between 1913 and now, you were taught an incorrect model of the atom. This is not a variable outcome assessment. This is a confirmation.';
-
-      let breakdown = 'BREAKDOWN:<br>';
-      quizAnswers.forEach((a, i) => {
-        breakdown += `Q${i+1}: ${quizReveals[i][a]}<br>`;
-      });
-      breakdown += '<br>OVERALL EXPOSURE LEVEL: ██████████ 100%<br>RECOMMENDED ACTION: Read the Schrödinger equation. Hug a physics teacher. Move on.';
-      document.getElementById('quiz-breakdown').innerHTML = breakdown;
-
+      document.getElementById('quiz-desc').textContent = 'Regardless of your answers, the conclusion is the same. If you attended any school on planet Earth between 1913 and now, you were taught an incorrect model of the atom. This is not a variable outcome assessment. This is a confirmation.';
+      let bd = 'BREAKDOWN:<br>';
+      quizAnswers.forEach((a,i) => { bd += `Q${i+1}: ${quizReveals[i][a]}<br>`; });
+      bd += '<br>OVERALL EXPOSURE LEVEL: ██████████ 100%<br>RECOMMENDED ACTION: Read the Schrödinger equation. Hug a physics teacher. Move on.';
+      document.getElementById('quiz-breakdown').innerHTML = bd;
       result.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     // ============ MERCH ============
-    const cartMessages = [
+    const cartMsgs = [
       'Shopping cart compromised by Big Textbook. Try again.',
       'ERROR: Pearson has blocked this transaction.',
       'Item added! Just kidding. This isn\'t a real store. But your passion is noted.',
@@ -1487,13 +1342,9 @@
       'Your cart exists in a superposition of states until observed by a Pearson auditor.',
     ];
     function addToCart(btn) {
-      const msg = cartMessages[Math.floor(Math.random() * cartMessages.length)];
-      btn.classList.add('carted');
-      btn.textContent = msg;
-      setTimeout(() => {
-        btn.classList.remove('carted');
-        btn.textContent = 'ADD TO CART';
-      }, 3000);
+      const msg = cartMsgs[Math.floor(Math.random() * cartMsgs.length)];
+      btn.classList.add('carted'); btn.textContent = msg;
+      setTimeout(() => { btn.classList.remove('carted'); btn.textContent = 'ADD TO CART'; }, 3000);
     }
 
     // ============ NEWSLETTER ============
@@ -1501,125 +1352,39 @@
       const email = document.getElementById('email-input').value;
       const msg = document.getElementById('subscribe-msg');
       if (!email || !email.includes('@')) {
-        msg.style.display = 'block';
-        msg.style.color = '#cc2222';
-        msg.textContent = 'Big Textbook has already compromised your email client. Try again.';
-        return;
+        msg.style.display = 'block'; msg.style.color = '#cc2222';
+        msg.textContent = 'Big Textbook has already compromised your email client. Try again.'; return;
       }
-      msg.style.display = 'block';
-      msg.style.color = '#2a7a2a';
-      msg.innerHTML = `Thank you, brave truth-seeker. Your email has been encrypted using a quantum algorithm that, ironically, would not work if the Rutherford model were correct.<br><br><small style="opacity:0.5">(We don't actually collect emails. This is a comedy website. But your outrage is valid.)</small>`;
+      msg.style.display = 'block'; msg.style.color = '#2a7a2a';
+      msg.innerHTML = `Thank you, brave truth-seeker. Your email has been encrypted using a quantum algorithm that, ironically, would not work if the Bohr model were correct.<br><br><small style="opacity:0.4">(We don't actually collect emails. This is a comedy website. But your outrage is valid.)</small>`;
       document.getElementById('email-input').value = '';
     }
 
-    // ============ AUDIO ============
-    const track = document.getElementById('conspiracy-track');
-    let audioCtx = null;
-    let audioPlaying = false;
-    let masterGain = null;
-    let usingTrack = false;
-
-    function createDrone() {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0;
-      masterGain.connect(audioCtx.destination);
-      const bass = audioCtx.createOscillator(); bass.type = 'sine'; bass.frequency.value = 55;
-      const bassGain = audioCtx.createGain(); bassGain.gain.value = 0.3;
-      bass.connect(bassGain); bassGain.connect(masterGain); bass.start();
-      const lfo = audioCtx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.05;
-      const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 8;
-      lfo.connect(lfoGain); lfoGain.connect(bass.frequency); lfo.start();
-      const mid = audioCtx.createOscillator(); mid.type = 'sawtooth'; mid.frequency.value = 110;
-      const midGain = audioCtx.createGain(); midGain.gain.value = 0.04;
-      const midFilter = audioCtx.createBiquadFilter(); midFilter.type = 'lowpass'; midFilter.frequency.value = 300; midFilter.Q.value = 5;
-      mid.connect(midFilter); midFilter.connect(midGain); midGain.connect(masterGain); mid.start();
-      const lfo2 = audioCtx.createOscillator(); lfo2.type = 'sine'; lfo2.frequency.value = 0.03;
-      const lfo2Gain = audioCtx.createGain(); lfo2Gain.gain.value = 150;
-      lfo2.connect(lfo2Gain); lfo2Gain.connect(midFilter.frequency); lfo2.start();
-      const high = audioCtx.createOscillator(); high.type = 'sine'; high.frequency.value = 880;
-      const highGain = audioCtx.createGain(); highGain.gain.value = 0.008;
-      high.connect(highGain); highGain.connect(masterGain); high.start();
-      const sub = audioCtx.createOscillator(); sub.type = 'sine'; sub.frequency.value = 30;
-      const subGain = audioCtx.createGain(); subGain.gain.value = 0.2;
-      sub.connect(subGain); subGain.connect(masterGain); sub.start();
-      const bufferSize = audioCtx.sampleRate * 2;
-      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const output = noiseBuffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
-      const noise = audioCtx.createBufferSource(); noise.buffer = noiseBuffer; noise.loop = true;
-      const noiseGain = audioCtx.createGain(); noiseGain.gain.value = 0.015;
-      const noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'bandpass'; noiseFilter.frequency.value = 400; noiseFilter.Q.value = 0.5;
-      noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(masterGain); noise.start();
-    }
-
-    function toggleAudio() {
-      const btn = document.getElementById('audio-control');
-      const hasTrack = track.querySelector('source') || track.src;
-
-      if (audioPlaying) {
-        if (usingTrack) { track.pause(); }
-        else if (masterGain) { masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1); }
-        audioPlaying = false;
-        btn.textContent = '🔊 Enable Truth Frequency';
-      } else {
-        if (hasTrack && track.src && track.src !== window.location.href) {
-          track.volume = 0.5;
-          track.play().catch(() => {});
-          usingTrack = true;
-        } else {
-          if (!audioCtx) createDrone();
-          if (audioCtx.state === 'suspended') audioCtx.resume();
-          masterGain.gain.linearRampToValueAtTime(0.7, audioCtx.currentTime + 2);
-          usingTrack = false;
-        }
-        audioPlaying = true;
-        btn.textContent = '🔇 Disable Truth Frequency';
-      }
-    }
-
-    // ============ STRING BOARD RED LINES ============
+    // ============ STRING BOARD ============
     function drawStringBoard() {
       const board = document.getElementById('string-board');
       const canvas = document.getElementById('string-canvas');
       if (!board || !canvas) return;
-      canvas.width = board.offsetWidth;
-      canvas.height = board.offsetHeight;
+      canvas.width = board.offsetWidth; canvas.height = board.offsetHeight;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       const pins = board.querySelectorAll('.board-pin');
       if (pins.length < 2) return;
-
-      ctx.strokeStyle = 'rgba(204, 34, 34, 0.3)';
-      ctx.lineWidth = 1;
-
-      // Connect pins to center and to each other randomly
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-
+      ctx.strokeStyle = 'rgba(204, 34, 34, 0.25)'; ctx.lineWidth = 1;
+      const cx = canvas.width / 2, cy = canvas.height / 2;
+      const boardRect = board.getBoundingClientRect();
       pins.forEach(pin => {
-        const rect = pin.getBoundingClientRect();
-        const boardRect = board.getBoundingClientRect();
-        const px = rect.left - boardRect.left + rect.width / 2;
-        const py = rect.top - boardRect.top + rect.height / 2;
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(cx, cy);
-        ctx.stroke();
+        const r = pin.getBoundingClientRect();
+        const px = r.left - boardRect.left + r.width/2, py = r.top - boardRect.top + r.height/2;
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(cx, cy); ctx.stroke();
       });
-
-      // A few random cross-connections
       for (let i = 0; i < 4; i++) {
-        const a = pins[Math.floor(Math.random() * pins.length)];
-        const b = pins[Math.floor(Math.random() * pins.length)];
+        const a = pins[Math.floor(Math.random()*pins.length)], b = pins[Math.floor(Math.random()*pins.length)];
         if (a === b) continue;
-        const ar = a.getBoundingClientRect();
-        const br = b.getBoundingClientRect();
-        const boardRect = board.getBoundingClientRect();
+        const ar = a.getBoundingClientRect(), br = b.getBoundingClientRect();
         ctx.beginPath();
-        ctx.moveTo(ar.left - boardRect.left + ar.width/2, ar.top - boardRect.top + ar.height/2);
-        ctx.lineTo(br.left - boardRect.left + br.width/2, br.top - boardRect.top + br.height/2);
+        ctx.moveTo(ar.left-boardRect.left+ar.width/2, ar.top-boardRect.top+ar.height/2);
+        ctx.lineTo(br.left-boardRect.left+br.width/2, br.top-boardRect.top+br.height/2);
         ctx.stroke();
       }
     }
